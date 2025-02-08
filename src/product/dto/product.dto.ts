@@ -6,7 +6,12 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { ID_IS_NOT_VALID } from '../../common/const/errors.constants';
+import {
+  ID_IS_NOT_VALID, IS_NOT_DATE, IS_NOT_ENUM,
+  IS_NOT_NUMBER,
+  IS_NOT_STRING,
+  SHOULD_NOT_BE_EMPTY,
+} from '../../common/const/errors.constants';
 import {
   ProductStockStatus,
   ProductWeight,
@@ -15,43 +20,43 @@ import {
 export class ProductDto {
   @IsUUID('4', { message: ID_IS_NOT_VALID })
   _id: string;
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: IS_NOT_STRING })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   name: string;
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: IS_NOT_STRING })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   category: string;
-  @IsNumber()
-  @IsNotEmpty()
+  @IsNumber({}, { message: IS_NOT_NUMBER })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   quantityKg: number;
-  @IsNotEmpty()
-  @IsEnum(ProductWeight)
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
+  @IsEnum(ProductWeight, { message: IS_NOT_ENUM })
   unitWeight: ProductWeight;
-  @IsNumber()
-  @IsNotEmpty()
+  @IsNumber({}, { message: IS_NOT_NUMBER })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   quantityUnits: number;
-  @IsDate()
-  @IsNotEmpty()
+  @IsDate({ message: IS_NOT_DATE })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   expirationDate: Date;
-  @IsDate()
-  @IsNotEmpty()
+  @IsDate({ message: IS_NOT_DATE })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   createdAt: Date;
-  @IsDate()
-  @IsNotEmpty()
+  @IsDate({ message: IS_NOT_DATE })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   updatedAt: Date;
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: IS_NOT_STRING })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   barcode: string;
-  @IsNumber()
-  @IsNotEmpty()
+  @IsNumber({}, { message: IS_NOT_NUMBER })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   price: number;
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: IS_NOT_STRING })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   supplier: string;
-  @IsString()
-  @IsNotEmpty()
+  @IsString({ message: IS_NOT_STRING })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   storageLocation: string;
-  @IsEnum(ProductStockStatus)
-  @IsNotEmpty()
+  @IsEnum(ProductStockStatus, { message: IS_NOT_ENUM })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   status: ProductStockStatus;
 }
