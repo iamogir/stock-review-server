@@ -7,7 +7,9 @@ import {
   IsUUID,
 } from 'class-validator';
 import {
-  ID_IS_NOT_VALID, IS_NOT_DATE, IS_NOT_ENUM,
+  ID_IS_NOT_VALID,
+  IS_NOT_DATE,
+  IS_NOT_ENUM,
   IS_NOT_NUMBER,
   IS_NOT_STRING,
   SHOULD_NOT_BE_EMPTY,
