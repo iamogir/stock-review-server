@@ -11,7 +11,7 @@ export class ProductController {
     return this.productService.create(product);
   }
 
-  @Get()
+  @Get('/get_all_products')
   async findAll() {
     return this.productService.findAll();
   }
