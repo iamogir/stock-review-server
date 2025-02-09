@@ -1,13 +1,16 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ProductModule } from './product/product.module';
+import { APP_FILTER, BaseExceptionFilter } from '@nestjs/core';
+import { TestModule } from './test/test.module';
+// import mongoose from 'mongoose';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost:27017/stock-review-mongo'),
+    MongooseModule.forRoot('mongodb://localhost:27017/testbd'),
+    ProductModule,
+    TestModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [{ provide: APP_FILTER, useClass: BaseExceptionFilter }],
 })
 export class AppModule {}
