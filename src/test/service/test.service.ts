@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Test } from '../../schemas/test.schema';
+import { Test } from '../schema/test.schema';
 import { Model } from 'mongoose';
 import { TestDto } from '../dto/test.dto';
 
