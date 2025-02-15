@@ -6,13 +6,13 @@ import { ProductDto } from '../dto/product.dto';
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post()
+  @Post('/add_new_product')
   async addProduct(@Body() product: ProductDto) {
-    return this.productService.create(product);
+    return this.productService.addNewProduct(product);
   }
 
   @Get('/get_all_products')
   async findAll() {
-    return this.productService.findAll();
+    return this.productService.findAllProducts();
   }
 }

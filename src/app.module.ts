@@ -1,9 +1,10 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ProductModule } from './product/product.module';
 import { APP_FILTER, BaseExceptionFilter } from '@nestjs/core';
 import { TestModule } from './test/test.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import * as cors from 'cors';
 
 @Module({
   imports: [
@@ -20,4 +21,15 @@ import { MongooseModule } from '@nestjs/mongoose';
   ],
   providers: [{ provide: APP_FILTER, useClass: BaseExceptionFilter }],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        cors({
+          origin: 'http://localhost:5173',
+          credentials: true,
+        }),
+      )
+      .forRoutes('*');
+  }
+}
