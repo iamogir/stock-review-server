@@ -20,10 +20,10 @@ export class ProductService {
 
   async getAllProducts(): Promise<Product[]> {
     try {
-      const productArr: Product[] = await this.productModel.find().exec();
-      if (productArr.length === 0 || !productArr) {
+      const productsArr: Product[] = await this.productModel.find().exec();
+      if (productsArr.length === 0 || !productsArr) {
         throw new NotFoundException('Products not found');
-      } else return productArr;
+      } else return productsArr;
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
@@ -60,9 +60,19 @@ export class ProductService {
   }
 
   async getProductsByCategory(category: string): Promise<Product[] | null> {
-    const pr: Product[] = await this.productModel
-      .find({ category: category })
-      .exec();
-    return pr.length > 0 ? pr : null;
+    try {
+      const productsArr: Product[] | null = await this.productModel
+        .find({ category: category })
+        .exec();
+      if (productsArr.length === 0 || !productsArr) {
+        throw new NotFoundException(
+          'This category ' +
+            category +
+            ' does not exist or products in this category were not found',
+        );
+      } else return productsArr;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
   }
 }

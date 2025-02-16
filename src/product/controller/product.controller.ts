@@ -19,7 +19,18 @@ export class ProductController {
 
   @Get('/get_product_by_id/:id')
   async getProductById(@Param('id') id: string): Promise<Product | null> {
-    return this.productService.getProductById(id);
+    try {
+      return this.productService.getProductById(id);
+    } catch (error) {
+      console.log(error.code);
+      switch (error.code) {
+        case 404:
+          throw new Error('404!!!!!!');
+        case 500:
+          throw new Error('Internal Server Error FFFF');
+      }
+      return null;
+    }
   }
 
   @Delete('/delete_product_by_id/:id')
