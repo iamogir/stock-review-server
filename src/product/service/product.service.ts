@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Product } from '../schema/product.schema';
 import { Model } from 'mongoose';
@@ -19,11 +19,29 @@ export class ProductService {
   }
 
   async getAllProducts(): Promise<Product[]> {
-    return this.productModel.find().exec();
+    try {
+      const productArr: Product[] = await this.productModel.find().exec();
+      if (productArr.length === 0 || !productArr) {
+        throw new NotFoundException('Products not found');
+      } else return productArr;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
   }
 
   async getProductById(id: string): Promise<Product | null> {
-    return this.productModel.findById(id).exec();
+    try {
+      const product: Product | null = await this.productModel
+        .findById(id)
+        .exec();
+      if (!product) {
+        throw new NotFoundException(
+          'Product with id: ' + id + ' was not found',
+        );
+      } else return product;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
   }
 
   async deleteProductById(id: string): Promise<string> {
