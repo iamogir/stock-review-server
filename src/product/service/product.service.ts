@@ -45,8 +45,18 @@ export class ProductService {
   }
 
   async deleteProductById(id: string): Promise<string> {
-    await this.productModel.findByIdAndDelete(id).exec();
-    return id;
+    try {
+      const product: Product | null = await this.productModel
+        .findByIdAndDelete(id)
+        .exec();
+      if (!product) {
+        throw new NotFoundException(
+          'Product with id: ' + id + ' was not found',
+        );
+      } else return id;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
   }
 
   async getProductsByCategory(category: string): Promise<Product[] | null> {
