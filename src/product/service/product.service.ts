@@ -10,15 +10,19 @@ export class ProductService {
     @InjectModel(Product.name) private productModel: Model<Product>,
   ) {}
   async addNewProduct(product: ProductDto): Promise<Product> {
-    const newProduct = new this.productModel(product);
-    return newProduct.save();
+    try {
+      const newProduct = new this.productModel(product);
+      return await newProduct.save();
+    } catch (error) {
+      throw new Error('New product was not added: ' + (error as Error).message);
+    }
   }
 
-  async findAllProducts(): Promise<Product[]> {
+  async getAllProducts(): Promise<Product[]> {
     return this.productModel.find().exec();
   }
 
-  async findProductById(id: string): Promise<Product | null> {
+  async getProductById(id: string): Promise<Product | null> {
     return this.productModel.findById(id).exec();
   }
 
