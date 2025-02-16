@@ -1,6 +1,7 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { ProductService } from '../service/product.service';
 import { ProductDto } from '../dto/product.dto';
+import { Product } from '../schema/product.schema';
 
 @Controller('products')
 export class ProductController {
@@ -12,7 +13,26 @@ export class ProductController {
   }
 
   @Get('/get_all_products')
-  async findAll() {
+  async findAll(): Promise<Product[]> {
     return this.productService.findAllProducts();
+  }
+
+  @Get('/get_product_by_id/:id')
+  async findProductById(@Param('id') id: string): Promise<Product | null> {
+    return this.productService.findProductById(id);
+  }
+
+  @Delete('/delete_product_by_id/:id')
+  async deleteProduct(@Param('id') id: string): Promise<string> {
+    return this.productService.deleteProductById(id);
+  }
+
+  @Get('/get_products_by_category/:category')
+  async getProductsByCategory(
+    @Param('category') category: string,
+  ): Promise<Product[] | string> {
+    const pr: Product[] | null =
+      await this.productService.getProductsByCategory(category);
+    return pr !== null && pr.length > 0 ? pr : 'no such category';
   }
 }
