@@ -19,18 +19,7 @@ export class ProductController {
 
   @Get('/get_product_by_id/:id')
   async getProductById(@Param('id') id: string): Promise<Product | null> {
-    try {
-      return this.productService.getProductById(id);
-    } catch (error) {
-      console.log(error.code);
-      switch (error.code) {
-        case 404:
-          throw new Error('404!!!!!!');
-        case 500:
-          throw new Error('Internal Server Error FFFF');
-      }
-      return null;
-    }
+    return this.productService.getProductById(id);
   }
 
   @Delete('/delete_product_by_id/:id')
@@ -42,8 +31,10 @@ export class ProductController {
   async getProductsByCategory(
     @Param('category') category: string,
   ): Promise<Product[] | string> {
-    const pr: Product[] | null =
+    const productsArr: Product[] | null =
       await this.productService.getProductsByCategory(category);
-    return pr !== null && pr.length > 0 ? pr : 'no such category';
+    return productsArr !== null && productsArr.length > 0
+      ? productsArr
+      : 'no such category';
   }
 }
