@@ -60,10 +60,10 @@ export class ProductService {
     }
   }
 
-  async getProductsByCategory(category: string): Promise<Product[] | null> {
+  async getProductsByCategory(field: string, value: string): Promise<Product[] | null> {
     try {
       const productsArr: Product[] | null = await this.productModel
-        .find({ category: category })
+        .find({ `${field}`: value })
         .exec();
       if (productsArr.length === 0 || !productsArr) {
         throw new NotFoundException(
@@ -75,5 +75,9 @@ export class ProductService {
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
+  }
+
+  async getProductsBySupplier(supplier: string): Promise<Product[] | null> {
+    this.getProductsByCategory("supplier", supplier);
   }
 }
