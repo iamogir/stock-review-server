@@ -60,16 +60,19 @@ export class ProductService {
     }
   }
 
-  async getProductsByCategory(field: string, value: string): Promise<Product[] | null> {
+  async getProductsByField(
+    field: string,
+    value: string,
+  ): Promise<Product[] | null> {
     try {
       const productsArr: Product[] | null = await this.productModel
-        .find({ `${field}`: value })
+        .find({ [field]: value })
         .exec();
       if (productsArr.length === 0 || !productsArr) {
         throw new NotFoundException(
-          'This category ' +
-            category +
-            ' does not exist or products in this category were not found',
+          'This field ' +
+            field +
+            ' does not exist or products with this field were not found',
         );
       } else return productsArr;
     } catch (error) {
@@ -77,7 +80,7 @@ export class ProductService {
     }
   }
 
-  async getProductsBySupplier(supplier: string): Promise<Product[] | null> {
-    this.getProductsByCategory("supplier", supplier);
-  }
+  // async getProductsBySupplier(supplier: string): Promise<Product[] | null> {
+  //   return this.getProductsByField('supplier', supplier);
+  // }
 }

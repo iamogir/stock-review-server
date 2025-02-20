@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { ProductService } from '../service/product.service';
 import { ProductDto } from '../dto/product.dto';
 import { Product } from '../schema/product.schema';
@@ -27,14 +27,15 @@ export class ProductController {
     return this.productService.deleteProductById(id);
   }
 
-  @Get('/get_products_by_category/:category')
-  async getProductsByCategory(
-    @Param('category') category: string,
+  @Get(`/get_products_by`)
+  async getProductsByField(
+    @Query('field') field: string,
+    @Query('value') value: string,
   ): Promise<Product[] | string> {
     const productsArr: Product[] | null =
-      await this.productService.getProductsByCategory(category);
+      await this.productService.getProductsByField(field, value);
     return productsArr !== null && productsArr.length > 0
       ? productsArr
-      : 'no such category';
+      : 'no such products';
   }
 }
