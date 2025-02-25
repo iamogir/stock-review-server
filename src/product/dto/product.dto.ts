@@ -47,7 +47,7 @@ export class ProductDto {
   updatedAt: Date;
   @IsString({ message: IS_NOT_STRING })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
-  barcode: string;
+  barcode?: string;
   @IsNumber({}, { message: IS_NOT_NUMBER })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   price: number;

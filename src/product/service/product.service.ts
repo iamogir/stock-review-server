@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Product } from '../schema/product.schema';
 import { Model } from 'mongoose';
 import { ProductDto } from '../dto/product.dto';
+import { formatString } from '../../common/utils/product.utils';
 
 @Injectable()
 export class ProductService {
@@ -65,6 +66,9 @@ export class ProductService {
     value: string,
   ): Promise<Product[] | null> {
     try {
+      value = formatString(value);
+      field = field.toLowerCase();
+      console.log(value);
       const productsArr: Product[] | null = await this.productModel
         .find({ [field]: value })
         .exec();
@@ -79,8 +83,4 @@ export class ProductService {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
-
-  // async getProductsBySupplier(supplier: string): Promise<Product[] | null> {
-  //   return this.getProductsByField('supplier', supplier);
-  // }
 }

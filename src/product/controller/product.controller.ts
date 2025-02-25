@@ -27,7 +27,7 @@ export class ProductController {
     return this.productService.deleteProductById(id);
   }
 
-  @Get(`/get_products_by`)
+  @Get(`/get_products_by`) //get_products_by?field=name&value=Tomato
   async getProductsByField(
     @Query('field') field: string,
     @Query('value') value: string,
