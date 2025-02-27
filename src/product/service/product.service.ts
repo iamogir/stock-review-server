@@ -93,8 +93,6 @@ export class ProductService {
     changes: Partial<ProductDto>,
   ): Promise<Product> {
     try {
-      console.log("...");
-      console.log(id);
       const updatedProduct = await this.productModel.findByIdAndUpdate(
         id,
         changes,
