@@ -88,17 +88,21 @@ export class ProductService {
     }
   }
 
-  async updateProductById(changes: Partial<ProductDto>): Promise<Product> {
+  async updateProductById(
+    id: string,
+    changes: Partial<ProductDto>,
+  ): Promise<Product> {
     try {
-      const { _id, ...infoObj } = changes;
+      console.log("...");
+      console.log(id);
       const updatedProduct = await this.productModel.findByIdAndUpdate(
-        _id,
-        infoObj,
+        id,
+        changes,
         { new: true },
       );
       if (!updatedProduct) {
         throw new NotFoundException(
-          'Product with id: ' + _id + ' was not found',
+          'Product with id: ' + id + ' was not found',
         );
       }
       return updatedProduct;

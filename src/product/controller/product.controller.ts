@@ -39,8 +39,11 @@ export class ProductController {
       : 'no such products';
   }
 
-  @Put('/update_product_by_id')
-  async updateProductById(@Body() changes: Partial<ProductDto>) {
-    return this.productService.updateProductById(changes);
+  @Put('/update_product_by_id/:id')
+  async updateProductById(
+    @Param('id') id: string,
+    @Body() changes: Partial<ProductDto>,
+  ) {
+    return this.productService.updateProductById(id, changes);
   }
 }
