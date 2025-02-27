@@ -48,9 +48,9 @@ export class ProductDto {
   @IsString({ message: IS_NOT_STRING })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   barcode?: string;
-  @IsNumber({}, { message: IS_NOT_NUMBER })
-  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
-  price: number;
+  // @IsNumber({}, { message: IS_NOT_NUMBER })
+  // @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
+  // price: number;
   @IsString({ message: IS_NOT_STRING })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   supplier: string;

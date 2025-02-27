@@ -12,7 +12,11 @@ export class ProductService {
   ) {}
   async addNewProduct(product: ProductDto): Promise<Product> {
     try {
-      const newProduct = new this.productModel(product);
+      const newProduct = new this.productModel({
+        ...product,
+        createdAt: new Date(Date.now()),
+        updatedAt: new Date(Date.now()),
+      });
       return await newProduct.save();
     } catch (error) {
       throw new Error('New product was not added: ' + (error as Error).message);
@@ -66,7 +70,7 @@ export class ProductService {
     value: string,
   ): Promise<Product[] | null> {
     try {
-      value = formatString(value);
+      value = value.toLowerCase();
       field = field.toLowerCase();
       console.log(value);
       const productsArr: Product[] | null = await this.productModel
@@ -79,6 +83,25 @@ export class ProductService {
             ' does not exist or products with this field were not found',
         );
       } else return productsArr;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
+
+  async updateProductById(changes: Partial<ProductDto>): Promise<Product> {
+    try {
+      const { _id, ...infoObj } = changes;
+      const updatedProduct = await this.productModel.findByIdAndUpdate(
+        _id,
+        infoObj,
+        { new: true },
+      );
+      if (!updatedProduct) {
+        throw new NotFoundException(
+          'Product with id: ' + _id + ' was not found',
+        );
+      }
+      return updatedProduct;
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }

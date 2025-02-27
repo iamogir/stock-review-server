@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query } from '@nestjs/common';
 import { ProductService } from '../service/product.service';
 import { ProductDto } from '../dto/product.dto';
 import { Product } from '../schema/product.schema';
@@ -37,5 +37,10 @@ export class ProductController {
     return productsArr !== null && productsArr.length > 0
       ? productsArr
       : 'no such products';
+  }
+
+  @Put('/update_product_by_id')
+  async updateProductById(@Body() changes: Partial<ProductDto>) {
+    return this.productService.updateProductById(changes);
   }
 }
