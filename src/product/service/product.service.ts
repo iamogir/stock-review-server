@@ -107,4 +107,19 @@ export class ProductService {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
+
+  async getExpiredProducts(): Promise<Product[]> {
+    try {
+      const currentDate = new Date();
+      const products: Product[] = await this.productModel
+        .find({ expirationDate: { $lt: currentDate } })
+        .exec();
+      if (!products || products.length === 0) {
+        throw new NotFoundException('No expired products. Great job!');
+      }
+      return products;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
 }

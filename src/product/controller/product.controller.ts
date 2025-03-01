@@ -46,4 +46,9 @@ export class ProductController {
   ) {
     return this.productService.updateProductById(id, changes);
   }
+
+  @Get('/get_expired_products')
+  async getExpiredProducts(): Promise<Product[]> {
+    return this.productService.getExpiredProducts();
+  }
 }
