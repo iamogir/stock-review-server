@@ -125,9 +125,10 @@ export class ProductService {
   async getExpiringSoonProducts(countDays: number): Promise<Product[]> {
     try {
       const currentDate = new Date();
-      const targetDate = currentDate.getDate() + countDays;
+      const targetDate = currentDate;
+      targetDate.setDate(targetDate.getDate() + countDays);
       const products: Product[] = await this.productModel
-        .find({ expirationDate: { $lt: targetDate } })
+        .find({ expirationDate: { $gt: currentDate, $lt: targetDate } })
         .exec();
       if (!products || products.length === 0) {
         throw new NotFoundException(
