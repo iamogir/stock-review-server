@@ -25,7 +25,6 @@ export class ProductService {
   async getAllProducts(): Promise<Product[]> {
     try {
       const productsArr: Product[] = await this.productModel.find().exec();
-      console.log(productsArr[0]._id);
       if (productsArr.length === 0 || !productsArr) {
         throw new NotFoundException('Products not found');
       } else return productsArr;
@@ -103,6 +102,40 @@ export class ProductService {
         );
       }
       return updatedProduct;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
+
+  async getExpiredProducts(): Promise<Product[]> {
+    try {
+      const currentDate = new Date();
+      const products: Product[] = await this.productModel
+        .find({ expirationDate: { $lt: currentDate } })
+        .exec();
+      if (!products || products.length === 0) {
+        throw new NotFoundException('No expired products. Great job!');
+      }
+      return products;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
+
+  async getExpiringSoonProducts(countDays: number): Promise<Product[]> {
+    try {
+      const currentDate = new Date();
+      const targetDate = new Date(currentDate);
+      targetDate.setDate(targetDate.getDate() + countDays);
+      const products: Product[] = await this.productModel
+        .find({ expirationDate: { $gt: currentDate, $lt: targetDate } })
+        .exec();
+      if (!products || products.length === 0) {
+        throw new NotFoundException(
+          'No expired products for next ' + countDays + ' days. Great job!',
+        );
+      }
+      return products;
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
