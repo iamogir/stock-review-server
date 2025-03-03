@@ -54,8 +54,9 @@ export class ProductController {
 
   @Get('/get_expiring_soon/:count')
   async getExpiringSoonProducts(
-    @Param('count') count: number,
+    @Param('count') count: string,
   ): Promise<Product[]> {
-    return this.productService.getExpiringSoonProducts(count);
+    const number = parseInt(count);
+    return this.productService.getExpiringSoonProducts(number);
   }
 }
