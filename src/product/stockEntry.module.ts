@@ -4,7 +4,9 @@ import { Module } from '@nestjs/common';
 
 @Module({
   imports: [
-    MongooseModule.forFeature([{name: StockEntry.name, schema: StockEntrySchema }]),
+    MongooseModule.forFeature([
+      { name: StockEntry.name, schema: StockEntrySchema },
+    ]),
   ],
   controllers: [],
   providers: [],

@@ -4,7 +4,7 @@ import { Document, Types } from 'mongoose';
 @Schema({ collection: 'stock_entries' })
 export class StockEntry extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
-  productId: string;
+  productId: Types.ObjectId;
   @Prop({ required: true }) weight: number;
   @Prop({ required: true }) unitWeight: string;
   @Prop({ required: true }) quantityUnits: number;

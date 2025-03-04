@@ -4,10 +4,8 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
-  IsUUID,
 } from 'class-validator';
 import {
-  ID_IS_NOT_VALID,
   IS_NOT_DATE,
   IS_NOT_ENUM,
   IS_NOT_NUMBER,
@@ -15,10 +13,9 @@ import {
   SHOULD_NOT_BE_EMPTY,
 } from '../../common/const/errors.constants';
 import { ProductWeight } from '../../common/enums/product.enum';
+import { ProductDto } from './product.dto';
 
-export class StockEntryDto {
-  @IsUUID('4', { message: ID_IS_NOT_VALID })
-  _id?: string;
+export class StockEntryDto extends ProductDto {
   @IsNumber({}, { message: IS_NOT_NUMBER })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   weight: number;
@@ -31,12 +28,6 @@ export class StockEntryDto {
   @IsDate({ message: IS_NOT_DATE })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   expirationDate: Date;
-  @IsDate({ message: IS_NOT_DATE })
-  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
-  createdAt: Date;
-  @IsDate({ message: IS_NOT_DATE })
-  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
-  updatedAt: Date;
   @IsString({ message: IS_NOT_STRING })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   barcode?: string;
