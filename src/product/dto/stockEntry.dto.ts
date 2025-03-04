@@ -4,8 +4,10 @@ import {
   IsNotEmpty,
   IsNumber,
   IsString,
+  IsUUID,
 } from 'class-validator';
 import {
+  ID_IS_NOT_VALID,
   IS_NOT_DATE,
   IS_NOT_ENUM,
   IS_NOT_NUMBER,
@@ -16,6 +18,8 @@ import { ProductWeight } from '../../common/enums/product.enum';
 import { ProductDto } from './product.dto';
 
 export class StockEntryDto extends ProductDto {
+  @IsUUID('4', { message: ID_IS_NOT_VALID })
+  entryId?: string;
   @IsNumber({}, { message: IS_NOT_NUMBER })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   weight: number;

@@ -9,8 +9,6 @@ import {
   Query,
 } from '@nestjs/common';
 import { ProductService } from '../service/product.service';
-import { ProductDto } from '../dto/product.dto';
-import { Product } from '../schema/product.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntry } from '../schema/stockEntry.schema';
 
