@@ -11,60 +11,62 @@ import {
 import { ProductService } from '../service/product.service';
 import { ProductDto } from '../dto/product.dto';
 import { Product } from '../schema/product.schema';
+import { StockEntryDto } from '../dto/stockEntry.dto';
+import { StockEntry } from '../schema/stockEntry.schema';
 
 @Controller('stock_entries')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 
-  @Post('/add_new_product')
-  async addProduct(@Body() product: ProductDto) {
-    return this.productService.addNewProduct(product);
+  @Post('/add_new_stock_entry')
+  async addNewStockEntry(@Body() product: StockEntryDto): Promise<StockEntry> {
+    return this.productService.addNewStockEntry(product);
   }
 
-  @Get('/get_all_products')
-  async getAllProducts(): Promise<Product[]> {
-    return this.productService.getAllProducts();
+  @Get('/get_all_stock_entries')
+  async getAllStockEntries(): Promise<StockEntry[]> {
+    return this.productService.getAllStockEntries();
   }
 
-  @Get('/get_product_by_id/:id')
-  async getProductById(@Param('id') id: string): Promise<Product | null> {
-    return this.productService.getProductById(id);
+  @Get('/get_stock_entry_by_id/:id')
+  async getStockEntryById(@Param('id') id: string): Promise<StockEntry | null> {
+    return this.productService.getStockEntryById(id);
   }
 
-  @Delete('/delete_product_by_id/:id')
-  async deleteProduct(@Param('id') id: string): Promise<string> {
-    return this.productService.deleteProductById(id);
+  @Delete('/delete_stock_entry_by_id/:id')
+  async deleteStockEntryById(@Param('id') id: string): Promise<string> {
+    return this.productService.deleteStockEntryById(id);
   }
 
-  @Get(`/get_products_by`) //get_products_by?field=name&value=Tomato
-  async getProductsByField(
+  @Get(`/get_stock_entries_by`) //get_products_by?field=name&value=Tomato
+  async getStockEntriesByField(
     @Query('field') field: string,
     @Query('value') value: string,
-  ): Promise<Product[] | string> {
-    const productsArr: Product[] | null =
-      await this.productService.getProductsByField(field, value);
+  ): Promise<StockEntry[] | string> {
+    const productsArr: StockEntry[] | null =
+      await this.productService.getStockEntriesByField(field, value);
     return productsArr !== null && productsArr.length > 0
       ? productsArr
       : 'no such products';
   }
 
-  @Put('/update_product_by_id/:id')
-  async updateProductById(
+  @Put('/update_stock_entry_by_id/:id')
+  async updateStockEntryById(
     @Param('id') id: string,
-    @Body() changes: Partial<ProductDto>,
+    @Body() changes: Partial<StockEntryDto>,
   ) {
-    return this.productService.updateProductById(id, changes);
+    return this.productService.updateStockEntryById(id, changes);
   }
 
   @Get('/get_expired_products')
-  async getExpiredProducts(): Promise<Product[]> {
+  async getExpiredProducts(): Promise<StockEntry[]> {
     return this.productService.getExpiredProducts();
   }
 
   @Get('/get_expiring_soon/:count')
   async getExpiringSoonProducts(
     @Param('count') count: string,
-  ): Promise<Product[]> {
+  ): Promise<StockEntry[]> {
     const number = parseInt(count);
     return this.productService.getExpiringSoonProducts(number);
   }
