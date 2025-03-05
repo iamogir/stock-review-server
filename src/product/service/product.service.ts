@@ -30,6 +30,7 @@ export class ProductService {
         .find()
         .populate('productId')
         .exec();
+      console.log(productsArr[0].productId);
       if (productsArr.length === 0 || !productsArr) {
         throw new NotFoundException('Products not found');
       } else return productsArr;
