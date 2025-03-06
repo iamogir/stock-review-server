@@ -6,7 +6,6 @@ export class StockEntry extends Document {
   @Prop({ type: Types.ObjectId, ref: 'Product', required: true })
   productId: Types.ObjectId;
   @Prop({ required: true }) weight: number;
-  @Prop({ required: true }) unitWeight: string;
   @Prop({ required: true }) quantityUnits: number;
   @Prop({ required: true }) expirationDate: Date;
   @Prop({ required: true }) createdAt: Date;

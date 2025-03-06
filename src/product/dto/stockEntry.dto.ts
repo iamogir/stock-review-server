@@ -26,9 +26,6 @@ export class StockEntryDto extends ProductDto {
   @IsNumber({}, { message: IS_NOT_NUMBER })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   weight: number;
-  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
-  @IsEnum(ProductWeight, { message: IS_NOT_ENUM })
-  unitWeight: ProductWeight;
   @IsNumber({}, { message: IS_NOT_NUMBER })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   quantityUnits: number;
