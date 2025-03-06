@@ -7,8 +7,8 @@ import {
 } from '../../common/const/errors.constants';
 
 export class ProductDto {
-  @IsUUID('4', { message: ID_IS_NOT_VALID })
-  productId?: string;
+  // @IsUUID('4', { message: ID_IS_NOT_VALID })
+  // productId?: string;
   @IsString({ message: IS_NOT_STRING })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   name: string;

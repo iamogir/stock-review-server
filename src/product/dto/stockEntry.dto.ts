@@ -18,8 +18,11 @@ import { ProductWeight } from '../../common/enums/product.enum';
 import { ProductDto } from './product.dto';
 
 export class StockEntryDto extends ProductDto {
-  @IsUUID('4', { message: ID_IS_NOT_VALID })
-  entryId?: string;
+  // @IsUUID('4', { message: ID_IS_NOT_VALID })
+  // entryId?: string;
+  @IsString({ message: IS_NOT_STRING })
+  @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
+  productId: string;
   @IsNumber({}, { message: IS_NOT_NUMBER })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   weight: number;
