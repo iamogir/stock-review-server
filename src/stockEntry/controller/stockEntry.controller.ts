@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { StockEntryService } from '../service/stockEntry.service';
 import { StockEntryDto } from '../dto/stockEntry.dto';
-import { StockEntry } from '../schema/stockEntry.schema';
 
 @Controller('stock_entries')
 export class StockEntryController {
