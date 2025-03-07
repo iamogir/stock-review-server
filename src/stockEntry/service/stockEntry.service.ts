@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 
@@ -11,8 +11,12 @@ export class StockEntryService {
   ) {}
   async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
-      const newProduct = new this.productModel({
-        ...product,
+      const objectId = new Types.ObjectId(product.productId);
+      const { productId, ...newObj } = product;
+      newObj.productId = objectId;
+
+      const newProduct: StockEntry = new this.productModel({
+        ...newObj,
         createdAt: new Date(Date.now()),
         updatedAt: new Date(Date.now()),
       });
