@@ -119,21 +119,20 @@ export class StockEntryService {
     }
   }
 
-  async getExpiringSoonProducts(countDays: number): Promise<StockEntry[]> {
+  async getExpiringSoonProducts(countDays: number): Promise<StockEntryDto[]> {
     try {
       const currentDate = new Date();
       const targetDate = new Date(currentDate);
       targetDate.setDate(targetDate.getDate() + countDays);
       const products: StockEntry[] = await this.productModel
         .find({ expirationDate: { $gt: currentDate, $lt: targetDate } })
-        .populate('productId')
         .exec();
       if (!products || products.length === 0) {
         throw new NotFoundException(
           'No expired products for next ' + countDays + ' days. Great job!',
         );
       }
-      return products;
+      return products.map((pr) => StockEntryMapper.toDto(pr));
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }

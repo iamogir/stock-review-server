@@ -68,7 +68,7 @@ export class StockEntryController {
   @Get('/get_expiring_soon/:count')
   async getExpiringSoonProducts(
     @Param('count') count: string,
-  ): Promise<StockEntry[]> {
+  ): Promise<StockEntryDto[]> {
     const number = parseInt(count);
     return this.productService.getExpiringSoonProducts(number);
   }
