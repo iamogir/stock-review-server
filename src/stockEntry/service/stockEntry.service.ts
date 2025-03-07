@@ -13,9 +13,12 @@ export class StockEntryService {
   ) {}
   async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
-      const newProduct: StockEntry = new this.stockEntryModel(
-        StockEntryMapper.fromDto(product),
-      );
+      const temp = StockEntryMapper.fromDto(product);
+      const newProduct: StockEntry = new this.stockEntryModel({
+        ...temp,
+        createdAt: new Date(Date.now()),
+        updatedAt: new Date(Date.now()),
+      });
       return StockEntryMapper.toDto(await newProduct.save());
     } catch (error) {
       throw new Error(
@@ -28,7 +31,7 @@ export class StockEntryService {
     try {
       const productsArr: StockEntry[] = await this.stockEntryModel.find().exec();
       if (productsArr.length === 0 || !productsArr) {
-        throw new NotFoundException('Products not found');
+        throw new NotFoundException('Stock entries not found');
       } else return productsArr.map((pr) => StockEntryMapper.toDto(pr));
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);

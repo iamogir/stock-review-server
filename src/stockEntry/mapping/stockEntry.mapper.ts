@@ -5,13 +5,8 @@ import { StockEntryDto } from '../dto/stockEntry.dto';
 export class StockEntryMapper {
   static fromDto(dto: StockEntryDto): Partial<StockEntry> {
     const objectId = new Types.ObjectId(dto.productId);
-    const newObj = { ...dto, productId: objectId };
 
-    return {
-      ...newObj,
-      createdAt: new Date(Date.now()),
-      updatedAt: new Date(Date.now()),
-    };
+    return { ...dto, productId: objectId };
   }
 
   static toDto(obj: StockEntry): StockEntryDto {
