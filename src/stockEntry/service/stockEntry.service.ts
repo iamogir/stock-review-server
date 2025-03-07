@@ -3,6 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
+import { StockEntryMapper } from '../../product/mapping/stockEntry.mapper';
 
 @Injectable()
 export class StockEntryService {
@@ -11,27 +12,13 @@ export class StockEntryService {
   ) {}
   async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
-      const objectId = new Types.ObjectId(product.productId);
-      const newObj = { ...product, productId: objectId };
-
-      const newProduct: StockEntry = new this.productModel({
-        ...newObj,
-        createdAt: new Date(Date.now()),
-        updatedAt: new Date(Date.now()),
-      });
-      const savedEntry = await newProduct.save();
-
-      console.log(savedEntry);
-      return new StockEntryDto(
-        savedEntry.productId.toString(),
-        savedEntry.weight,
-        savedEntry.quantityUnits,
-        savedEntry.expirationDate,
-        savedEntry.supplier,
-        savedEntry.storageLocation,
-        String(savedEntry._id),
-        savedEntry.barcode,
+      const newProduct: StockEntry = new this.productModel(
+        StockEntryMapper.fromDto(product),
       );
+      // const savedEntry = await newProduct.save();
+
+      // console.log(savedEntry);
+      return StockEntryMapper.toDto(await newProduct.save());
     } catch (error) {
       throw new Error(
         'New stock entry was not added: ' + (error as Error).message,
