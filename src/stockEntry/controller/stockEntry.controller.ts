@@ -24,7 +24,7 @@ export class StockEntryController {
   }
 
   @Get('/get_all_stock_entries')
-  async getAllStockEntries(): Promise<StockEntry[]> {
+  async getAllStockEntries(): Promise<StockEntryDto[]> {
     return this.productService.getAllStockEntries();
   }
 

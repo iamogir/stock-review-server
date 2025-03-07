@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../../product/mapping/stockEntry.mapper';
@@ -15,9 +15,6 @@ export class StockEntryService {
       const newProduct: StockEntry = new this.productModel(
         StockEntryMapper.fromDto(product),
       );
-      // const savedEntry = await newProduct.save();
-
-      // console.log(savedEntry);
       return StockEntryMapper.toDto(await newProduct.save());
     } catch (error) {
       throw new Error(
@@ -26,16 +23,12 @@ export class StockEntryService {
     }
   }
 
-  async getAllStockEntries(): Promise<StockEntry[]> {
+  async getAllStockEntries(): Promise<StockEntryDto[]> {
     try {
-      const productsArr: StockEntry[] = await this.productModel
-        .find()
-        .populate('productId')
-        .exec();
-      console.log(productsArr[0].productId);
+      const productsArr: StockEntry[] = await this.productModel.find().exec();
       if (productsArr.length === 0 || !productsArr) {
         throw new NotFoundException('Products not found');
-      } else return productsArr;
+      } else return productsArr.map((pr) => StockEntryMapper.toDto(pr));
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
