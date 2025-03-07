@@ -12,8 +12,7 @@ export class StockEntryService {
   async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
       const objectId = new Types.ObjectId(product.productId);
-      const { productId, ...newObj } = product;
-      newObj.productId = objectId;
+      const newObj = { ...product, productId: objectId };
 
       const newProduct: StockEntry = new this.productModel({
         ...newObj,
@@ -21,6 +20,8 @@ export class StockEntryService {
         updatedAt: new Date(Date.now()),
       });
       const savedEntry = await newProduct.save();
+
+      console.log(savedEntry);
       return new StockEntryDto(
         savedEntry.productId.toString(),
         savedEntry.weight,
@@ -28,6 +29,7 @@ export class StockEntryService {
         savedEntry.expirationDate,
         savedEntry.supplier,
         savedEntry.storageLocation,
+        String(savedEntry._id),
         savedEntry.barcode,
       );
     } catch (error) {

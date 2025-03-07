@@ -17,7 +17,9 @@ export class StockEntryController {
   constructor(private readonly productService: StockEntryService) {}
 
   @Post('/add_new_stock_entry')
-  async addNewStockEntry(@Body() product: StockEntryDto): Promise<StockEntry> {
+  async addNewStockEntry(
+    @Body() product: StockEntryDto,
+  ): Promise<StockEntryDto> {
     return this.productService.addNewStockEntry(product);
   }
 

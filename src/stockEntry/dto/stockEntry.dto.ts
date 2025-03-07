@@ -18,8 +18,8 @@ import { ProductWeight } from '../../common/enums/product.enum';
 import { ProductDto } from '../../product/dto/product.dto';
 
 export class StockEntryDto {
-  // @IsUUID('4', { message: ID_IS_NOT_VALID })
-  // entryId?: string;
+  @IsUUID('4', { message: ID_IS_NOT_VALID })
+  _id?: string;
   @IsString({ message: IS_NOT_STRING })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   productId: string;
@@ -49,6 +49,7 @@ export class StockEntryDto {
     expirationDate: Date,
     supplier: string,
     storageLocation: string,
+    _id?: string,
     barcode?: string,
   ) {
     this.productId = productId;
@@ -58,6 +59,9 @@ export class StockEntryDto {
     this.supplier = supplier;
     this.storageLocation = storageLocation;
 
+    if (_id) {
+      this._id = _id;
+    }
     if (barcode) {
       this.barcode = barcode;
     }
