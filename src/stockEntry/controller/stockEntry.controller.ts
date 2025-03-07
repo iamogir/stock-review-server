@@ -29,7 +29,7 @@ export class StockEntryController {
   }
 
   @Get('/get_stock_entry_by_id/:id')
-  async getStockEntryById(@Param('id') id: string): Promise<StockEntry | null> {
+  async getStockEntryById(@Param('id') id: string): Promise<StockEntryDto | null> {
     return this.productService.getStockEntryById(id);
   }
 

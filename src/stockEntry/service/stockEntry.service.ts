@@ -34,15 +34,14 @@ export class StockEntryService {
     }
   }
 
-  async getStockEntryById(id: string): Promise<StockEntry | null> {
+  async getStockEntryById(id: string): Promise<StockEntryDto | null> {
     try {
       const product: StockEntry | null = await this.productModel
         .findById(id)
-        .populate('productId')
         .exec();
       if (!product) {
         throw new NotFoundException('Entry with id: ' + id + ' was not found');
-      } else return product;
+      } else return StockEntryMapper.toDto(product);
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
