@@ -1,8 +1,9 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Product } from '../schema/product.schema';
+import { Product, Product } from '../schema/product.schema';
 import { Model } from 'mongoose';
 import { ProductDto } from '../dto/product.dto';
+import { ProductMapper } from '../mapping/products.mapper';
 
 @Injectable()
 export class ProductService {
@@ -11,11 +12,13 @@ export class ProductService {
   ) {}
   async getAllProducts(): Promise<ProductDto[]> {
     try {
-      const products: ProductDto[] = this.productModel.find().exec();
+      const products: Product[] = await this.productModel.find().exec();
 
       if (!products || products.length === 0) {
         throw new NotFoundException('Products not found');
-      } else return products
+      } else return products.map((pr) => ProductMapper.toDto(pr));
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
 }

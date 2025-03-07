@@ -26,4 +26,22 @@ export class ProductDto {
   @IsBoolean({ message: IS_NOT_BOOLEAN })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   status: boolean;
+
+  constructor(
+    name: string,
+    category: string,
+    brand: string,
+    unitWeight: ProductWeight,
+    status: boolean,
+    _id?: string,
+  ) {
+    this.name = name;
+    this.category = category;
+    this.brand = brand;
+    this.unitWeight = unitWeight;
+    this.status = status;
+    if (_id) {
+      this._id = _id;
+    }
+  }
 }

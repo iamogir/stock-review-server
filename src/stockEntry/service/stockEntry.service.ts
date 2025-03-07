@@ -29,7 +29,9 @@ export class StockEntryService {
 
   async getAllStockEntries(): Promise<StockEntryDto[]> {
     try {
-      const productsArr: StockEntry[] = await this.stockEntryModel.find().exec();
+      const productsArr: StockEntry[] = await this.stockEntryModel
+        .find()
+        .exec();
       if (productsArr.length === 0 || !productsArr) {
         throw new NotFoundException('Stock entries not found');
       } else return productsArr.map((pr) => StockEntryMapper.toDto(pr));
