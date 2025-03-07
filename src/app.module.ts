@@ -5,7 +5,7 @@ import { TestModule } from './test/test.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as cors from 'cors';
-import { StockEntryModule } from './product/stockEntry.module';
+import { StockEntryModule } from './stockEntry/stockEntry.module';
 
 @Module({
   imports: [

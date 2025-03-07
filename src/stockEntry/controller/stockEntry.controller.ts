@@ -8,13 +8,13 @@ import {
   Put,
   Query,
 } from '@nestjs/common';
-import { ProductService } from '../service/product.service';
+import { StockEntryService } from '../service/stockEntry.service';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntry } from '../schema/stockEntry.schema';
 
 @Controller('stock_entries')
-export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+export class StockEntryController {
+  constructor(private readonly productService: StockEntryService) {}
 
   @Post('/add_new_stock_entry')
   async addNewStockEntry(@Body() product: StockEntryDto): Promise<StockEntry> {

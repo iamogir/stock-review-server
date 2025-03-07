@@ -5,18 +5,27 @@ import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 
 @Injectable()
-export class ProductService {
+export class StockEntryService {
   constructor(
     @InjectModel(StockEntry.name) private productModel: Model<StockEntry>,
   ) {}
-  async addNewStockEntry(product: StockEntryDto): Promise<StockEntry> {
+  async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
       const newProduct = new this.productModel({
         ...product,
         createdAt: new Date(Date.now()),
         updatedAt: new Date(Date.now()),
       });
-      return await newProduct.save();
+      const savedEntry = await newProduct.save();
+      return new StockEntryDto(
+        savedEntry.productId.toString(),
+        savedEntry.weight,
+        savedEntry.quantityUnits,
+        savedEntry.expirationDate,
+        savedEntry.supplier,
+        savedEntry.storageLocation,
+        savedEntry.barcode,
+      );
     } catch (error) {
       throw new Error(
         'New stock entry was not added: ' + (error as Error).message,
