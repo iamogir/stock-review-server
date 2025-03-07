@@ -3,16 +3,17 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
-import { StockEntryMapper } from '../../product/mapping/stockEntry.mapper';
+import { StockEntryMapper } from '../mapping/stockEntry.mapper';
 
 @Injectable()
 export class StockEntryService {
   constructor(
-    @InjectModel(StockEntry.name) private productModel: Model<StockEntry>,
+    @InjectModel(StockEntry.name)
+    private readonly stockEntryModel: Model<StockEntry>,
   ) {}
   async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
-      const newProduct: StockEntry = new this.productModel(
+      const newProduct: StockEntry = new this.stockEntryModel(
         StockEntryMapper.fromDto(product),
       );
       return StockEntryMapper.toDto(await newProduct.save());
@@ -25,7 +26,7 @@ export class StockEntryService {
 
   async getAllStockEntries(): Promise<StockEntryDto[]> {
     try {
-      const productsArr: StockEntry[] = await this.productModel.find().exec();
+      const productsArr: StockEntry[] = await this.stockEntryModel.find().exec();
       if (productsArr.length === 0 || !productsArr) {
         throw new NotFoundException('Products not found');
       } else return productsArr.map((pr) => StockEntryMapper.toDto(pr));
@@ -36,7 +37,7 @@ export class StockEntryService {
 
   async getStockEntryById(id: string): Promise<StockEntryDto | null> {
     try {
-      const product: StockEntry | null = await this.productModel
+      const product: StockEntry | null = await this.stockEntryModel
         .findById(id)
         .exec();
       if (!product) {
@@ -49,7 +50,7 @@ export class StockEntryService {
 
   async deleteStockEntryById(id: string): Promise<string> {
     try {
-      const product: StockEntry | null = await this.productModel
+      const product: StockEntry | null = await this.stockEntryModel
         .findByIdAndDelete(id)
         .exec();
       if (!product) {
@@ -70,7 +71,7 @@ export class StockEntryService {
       value = value.toLowerCase();
       field = field.toLowerCase();
       console.log(value);
-      const productsArr: StockEntry[] | null = await this.productModel
+      const productsArr: StockEntry[] | null = await this.stockEntryModel
         .find({ [field]: value })
         .exec();
       if (productsArr.length === 0 || !productsArr) {
@@ -90,7 +91,7 @@ export class StockEntryService {
     changes: Partial<StockEntryDto>,
   ): Promise<StockEntryDto> {
     try {
-      const updatedProduct = await this.productModel.findByIdAndUpdate(
+      const updatedProduct = await this.stockEntryModel.findByIdAndUpdate(
         id,
         changes,
         { new: true },
@@ -107,7 +108,7 @@ export class StockEntryService {
   async getExpiredProducts(): Promise<StockEntryDto[]> {
     try {
       const currentDate = new Date();
-      const products: StockEntry[] = await this.productModel
+      const products: StockEntry[] = await this.stockEntryModel
         .find({ expirationDate: { $lt: currentDate } })
         .exec();
       if (!products || products.length === 0) {
@@ -124,7 +125,7 @@ export class StockEntryService {
       const currentDate = new Date();
       const targetDate = new Date(currentDate);
       targetDate.setDate(targetDate.getDate() + countDays);
-      const products: StockEntry[] = await this.productModel
+      const products: StockEntry[] = await this.stockEntryModel
         .find({ expirationDate: { $gt: currentDate, $lt: targetDate } })
         .exec();
       if (!products || products.length === 0) {

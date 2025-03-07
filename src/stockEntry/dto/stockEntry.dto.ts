@@ -1,6 +1,5 @@
 import {
   IsDate,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsString,
@@ -9,13 +8,10 @@ import {
 import {
   ID_IS_NOT_VALID,
   IS_NOT_DATE,
-  IS_NOT_ENUM,
   IS_NOT_NUMBER,
   IS_NOT_STRING,
   SHOULD_NOT_BE_EMPTY,
 } from '../../common/const/errors.constants';
-import { ProductWeight } from '../../common/enums/product.enum';
-import { ProductDto } from '../../product/dto/product.dto';
 
 export class StockEntryDto {
   @IsUUID('4', { message: ID_IS_NOT_VALID })
@@ -58,7 +54,6 @@ export class StockEntryDto {
     this.expirationDate = expirationDate;
     this.supplier = supplier;
     this.storageLocation = storageLocation;
-
     if (_id) {
       this._id = _id;
     }

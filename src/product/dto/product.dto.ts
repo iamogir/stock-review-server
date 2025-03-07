@@ -9,8 +9,8 @@ import {
 import { ProductWeight } from '../../common/enums/product.enum';
 
 export class ProductDto {
-  // @IsUUID('4', { message: ID_IS_NOT_VALID })
-  // productId?: string;
+  @IsUUID('4', { message: ID_IS_NOT_VALID })
+  _id?: string;
   @IsString({ message: IS_NOT_STRING })
   @IsNotEmpty({ message: SHOULD_NOT_BE_EMPTY })
   name: string;

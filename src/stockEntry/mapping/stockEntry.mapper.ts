@@ -1,6 +1,6 @@
-import { StockEntry } from '../../stockEntry/schema/stockEntry.schema';
+import { StockEntry } from '../schema/stockEntry.schema';
 import { Types } from 'mongoose';
-import { StockEntryDto } from '../../stockEntry/dto/stockEntry.dto';
+import { StockEntryDto } from '../dto/stockEntry.dto';
 
 export class StockEntryMapper {
   static fromDto(dto: StockEntryDto): Partial<StockEntry> {

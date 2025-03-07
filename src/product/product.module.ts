@@ -8,7 +8,7 @@ import { Product, ProductSchema } from './schema/product.schema';
   imports: [
     MongooseModule.forFeature([{ name: Product.name, schema: ProductSchema }]),
   ],
-  // controllers: [StockEntryController],
-  // providers: [StockEntryService],
+  controllers: [],
+  providers: [],
 })
 export class ProductModule {}
