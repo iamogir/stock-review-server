@@ -65,14 +65,13 @@ export class StockEntryService {
   async getStockEntriesByField(
     field: string,
     value: string,
-  ): Promise<StockEntry[] | null> {
+  ): Promise<StockEntryDto[] | null> {
     try {
       value = value.toLowerCase();
       field = field.toLowerCase();
       console.log(value);
       const productsArr: StockEntry[] | null = await this.productModel
         .find({ [field]: value })
-        .populate('productId')
         .exec();
       if (productsArr.length === 0 || !productsArr) {
         throw new NotFoundException(
@@ -80,7 +79,7 @@ export class StockEntryService {
             field +
             ' does not exist or entry with this field were not found',
         );
-      } else return productsArr;
+      } else return productsArr.map((pr) => StockEntryMapper.toDto(pr));
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }

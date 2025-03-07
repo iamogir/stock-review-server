@@ -29,7 +29,9 @@ export class StockEntryController {
   }
 
   @Get('/get_stock_entry_by_id/:id')
-  async getStockEntryById(@Param('id') id: string): Promise<StockEntryDto | null> {
+  async getStockEntryById(
+    @Param('id') id: string,
+  ): Promise<StockEntryDto | null> {
     return this.productService.getStockEntryById(id);
   }
 
@@ -42,8 +44,8 @@ export class StockEntryController {
   async getStockEntriesByField(
     @Query('field') field: string,
     @Query('value') value: string,
-  ): Promise<StockEntry[] | string> {
-    const productsArr: StockEntry[] | null =
+  ): Promise<StockEntryDto[] | string> {
+    const productsArr: StockEntryDto[] | null =
       await this.productService.getStockEntriesByField(field, value);
     return productsArr !== null && productsArr.length > 0
       ? productsArr
