@@ -56,7 +56,7 @@ export class StockEntryController {
   async updateStockEntryById(
     @Param('id') id: string,
     @Body() changes: Partial<StockEntryDto>,
-  ) {
+  ): Promise<StockEntryDto> {
     return this.productService.updateStockEntryById(id, changes);
   }
 

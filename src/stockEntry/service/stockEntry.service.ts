@@ -88,7 +88,7 @@ export class StockEntryService {
   async updateStockEntryById(
     id: string,
     changes: Partial<StockEntryDto>,
-  ): Promise<StockEntry> {
+  ): Promise<StockEntryDto> {
     try {
       const updatedProduct = await this.productModel.findByIdAndUpdate(
         id,
@@ -98,7 +98,7 @@ export class StockEntryService {
       if (!updatedProduct) {
         throw new NotFoundException('Entry with id: ' + id + ' was not found');
       }
-      return updatedProduct;
+      return StockEntryMapper.toDto(updatedProduct);
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
