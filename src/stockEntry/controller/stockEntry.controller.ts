@@ -61,7 +61,7 @@ export class StockEntryController {
   }
 
   @Get('/get_expired_products')
-  async getExpiredProducts(): Promise<StockEntry[]> {
+  async getExpiredProducts(): Promise<StockEntryDto[]> {
     return this.productService.getExpiredProducts();
   }
 

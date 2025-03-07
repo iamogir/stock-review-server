@@ -104,17 +104,16 @@ export class StockEntryService {
     }
   }
 
-  async getExpiredProducts(): Promise<StockEntry[]> {
+  async getExpiredProducts(): Promise<StockEntryDto[]> {
     try {
       const currentDate = new Date();
       const products: StockEntry[] = await this.productModel
         .find({ expirationDate: { $lt: currentDate } })
-        .populate('productId')
         .exec();
       if (!products || products.length === 0) {
         throw new NotFoundException('No expired products. Great job!');
       }
-      return products;
+      return products.map((pr) => StockEntryMapper.toDto(pr));
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
