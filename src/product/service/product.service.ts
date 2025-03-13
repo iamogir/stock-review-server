@@ -23,10 +23,15 @@ export class ProductService {
   }
   async addNewProduct(product: ProductDto): Promise<ProductDto> {
     try {
-      const newProduct =
-
+      const temp = ProductMapper.fromDto(product);
+      const newProduct: Product = new this.productModel({
+        ...temp,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+      return ProductMapper.toDto(await newProduct.save());
+    } catch (error) {
+      throw new Error('New product was not added: ' + (error as Error).message);
     }
-  } catch (error) {
-    throw new Error('New product was not added: ' + (error as Error).message);
   }
 }
