@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Product } from '../schema/product.schema';
 import { Model } from 'mongoose';
 import { ProductDto } from '../dto/product.dto';
-import { ProductMapper } from '../mapping/products.mapper';
+import { ProductMapper } from '../mapping/product.mapper';
 
 @Injectable()
 export class ProductService {
@@ -20,5 +20,13 @@ export class ProductService {
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
+  }
+  async addNewProduct(product: ProductDto): Promise<ProductDto> {
+    try {
+      const newProduct =
+
+    }
+  } catch (error) {
+    throw new Error('New product was not added: ' + (error as Error).message);
   }
 }

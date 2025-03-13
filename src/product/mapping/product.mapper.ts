@@ -15,4 +15,7 @@ export class ProductMapper {
       String(obj._id),
     );
   }
+  static fromDto(dto: ProductDto): Partial<Product> {
+    return { ...dto };
+  }
 }
