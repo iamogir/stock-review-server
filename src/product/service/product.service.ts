@@ -34,4 +34,18 @@ export class ProductService {
       throw new Error('New product was not added: ' + (error as Error).message);
     }
   }
+  async deleteProductById(id: string): Promise<string> {
+    try {
+      const product: Product | null = await this.productModel
+        .findByIdAndDelete(id)
+        .exec();
+      if (!product) {
+        throw new NotFoundException('Product not found');
+      } else {
+        return id;
+      }
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
 }
