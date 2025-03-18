@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
@@ -63,6 +63,17 @@ export class StockEntryService {
           'Stock entry with id: ' + id + ' was not found',
         );
       } else return id;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
+
+  async deleteAllEntriesByProductId(id: string): Promise<number> {
+    try {
+      const deleteResult = await this.stockEntryModel.deleteMany({
+        productId: new Types.ObjectId(id),
+      });
+      return deleteResult.deletedCount;
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
