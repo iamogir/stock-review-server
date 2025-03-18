@@ -12,5 +12,6 @@ import { StockEntryService } from './service/stockEntry.service';
   ],
   controllers: [StockEntryController],
   providers: [StockEntryService],
+  exports: [StockEntryService],
 })
 export class StockEntryModule {}

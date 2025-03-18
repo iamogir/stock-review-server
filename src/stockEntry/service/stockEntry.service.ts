@@ -73,7 +73,11 @@ export class StockEntryService {
       const deleteResult = await this.stockEntryModel.deleteMany({
         productId: new Types.ObjectId(id),
       });
-      return deleteResult.deletedCount;
+      if (!deleteResult) {
+        throw new NotFoundException('Entries by this product were not found');
+      } else {
+        return deleteResult.deletedCount;
+      }
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
