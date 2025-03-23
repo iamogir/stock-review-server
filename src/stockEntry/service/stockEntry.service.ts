@@ -27,6 +27,25 @@ export class StockEntryService {
     }
   }
 
+  async addNewEntries(entriesArray: StockEntryDto[]): Promise<number> {
+    try {
+      const temp: Partial<StockEntry>[] = [];
+      entriesArray.map((en) =>
+        temp.push({
+          ...StockEntryMapper.fromDto(en),
+          createdAt: new Date(Date.now()),
+          updatedAt: new Date(Date.now()),
+        }),
+      );
+      const newProducts = await this.stockEntryModel.insertMany(temp);
+      return newProducts.length;
+    } catch (error) {
+      throw new Error(
+        'New stock entry was not added: ' + (error as Error).message,
+      );
+    }
+  }
+
   async getAllStockEntries(): Promise<StockEntryDto[]> {
     try {
       const productsArr: StockEntry[] = await this.stockEntryModel
