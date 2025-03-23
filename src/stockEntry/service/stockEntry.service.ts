@@ -27,7 +27,7 @@ export class StockEntryService {
     }
   }
 
-  async addNewEntries(entriesArray: StockEntryDto[]): Promise<number> {
+  async addNewEntries(entriesArray: StockEntryDto[]): Promise<StockEntryDto[]> {
     try {
       const temp: Partial<StockEntry>[] = [];
       entriesArray.map((en) =>
@@ -37,8 +37,10 @@ export class StockEntryService {
           updatedAt: new Date(Date.now()),
         }),
       );
-      const newProducts = await this.stockEntryModel.insertMany(temp);
-      return newProducts.length;
+      const newProducts: Partial<StockEntry>[] =
+        await this.stockEntryModel.insertMany(temp);
+
+      return newProducts.map((el: StockEntry) => StockEntryMapper.toDto(el));
     } catch (error) {
       throw new Error(
         'New stock entry was not added: ' + (error as Error).message,

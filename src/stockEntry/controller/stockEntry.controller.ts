@@ -23,7 +23,9 @@ export class StockEntryController {
   }
 
   @Post('/add_new_entries')
-  async addNewEntries(@Body() entriesArray: StockEntryDto[]): Promise<number> {
+  async addNewEntries(
+    @Body() entriesArray: StockEntryDto[],
+  ): Promise<StockEntryDto[]> {
     return this.stockEntryService.addNewEntries(entriesArray);
   }
 
