@@ -22,11 +22,11 @@ export class StockEntryController {
     return this.stockEntryService.addNewStockEntry(product);
   }
 
-  @Post('/add_new_entries')
-  async addNewEntries(
+  @Post('/add_new_entries_stack')
+  async addNewEntriesStack(
     @Body() entriesArray: StockEntryDto[],
   ): Promise<StockEntryDto[]> {
-    return this.stockEntryService.addNewEntries(entriesArray);
+    return this.stockEntryService.addNewEntriesStack(entriesArray);
   }
 
   @Get('/get_all_stock_entries')

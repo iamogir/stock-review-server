@@ -27,7 +27,9 @@ export class StockEntryService {
     }
   }
 
-  async addNewEntries(entriesArray: StockEntryDto[]): Promise<StockEntryDto[]> {
+  async addNewEntriesStack(
+    entriesArray: StockEntryDto[],
+  ): Promise<StockEntryDto[]> {
     try {
       const temp: Partial<StockEntry>[] = [];
       entriesArray.map((en) =>
