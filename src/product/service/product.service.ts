@@ -36,9 +36,29 @@ export class ProductService {
       throw new Error('New product was not added: ' + (error as Error).message);
     }
   }
+  async addNewProductsStack(products: ProductDto[]): Promise<ProductDto[]> {
+    try {
+      const temp: Partial<Product>[] = [];
+      products.map((pr) =>
+        temp.push({
+          ...ProductMapper.fromDto(pr),
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }),
+      );
+      const newProducts: Partial<Product>[] =
+        await this.productModel.insertMany(temp);
+      return newProducts.map((pr: Product) => ProductMapper.toDto(pr));
+    } catch (error) {
+      throw new Error(
+        'New products were not added: ' + (error as Error).message,
+      );
+    }
+  }
   async deleteProductById(id: string): Promise<{ id: string; count: number }> {
     try {
-      const count = await this.stockEntryService.deleteAllEntriesByProductId(id);
+      const count =
+        await this.stockEntryService.deleteAllEntriesByProductId(id);
       const deleteResult = await this.productModel.findByIdAndDelete(id).exec();
       if (!deleteResult) {
         throw new NotFoundException('Product not found');
