@@ -4,12 +4,14 @@ import { Model, Types } from 'mongoose';
 import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
+import { ProductService } from '../../product/service/product.service';
 
 @Injectable()
 export class StockEntryService {
   constructor(
     @InjectModel(StockEntry.name)
     private readonly stockEntryModel: Model<StockEntry>,
+    private readonly productService: ProductService,
   ) {}
   async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
@@ -19,6 +21,7 @@ export class StockEntryService {
         createdAt: new Date(Date.now()),
         updatedAt: new Date(Date.now()),
       });
+      await this.productService.changeStatus(newProduct.productId.id, true);
       return StockEntryMapper.toDto(await newProduct.save());
     } catch (error) {
       throw new Error(
