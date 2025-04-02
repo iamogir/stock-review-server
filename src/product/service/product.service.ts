@@ -9,7 +9,8 @@ import { StockEntryService } from '../../stockEntry/service/stockEntry.service';
 @Injectable()
 export class ProductService {
   constructor(
-    @InjectModel(Product.name) private readonly productModel: Model<Product>,
+    @InjectModel(Product.name)
+    private readonly productModel: Model<Product>,
     private readonly stockEntryService: StockEntryService,
   ) {}
   async getAllProducts(): Promise<ProductDto[]> {
@@ -64,6 +65,21 @@ export class ProductService {
         throw new NotFoundException('Product not found');
       } else {
         return { id, count };
+      }
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
+  async changeStatus(id: Uint8Array, status: boolean): Promise<boolean> {
+    try {
+      const changes = await this.productModel
+        .findById(id)
+        .set({ status })
+        .exec();
+      if (!changes) {
+        throw new NotFoundException('Product not found');
+      } else {
+        return true;
       }
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
