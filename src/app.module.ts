@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import * as cors from 'cors';
 import { StockEntryModule } from './stockEntry/stockEntry.module';
+import { ProductHelperModule } from './productHelper/productHelper.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { StockEntryModule } from './stockEntry/stockEntry.module';
     }),
     ProductModule,
     StockEntryModule,
+    ProductHelperModule,
     TestModule,
   ],
   providers: [{ provide: APP_FILTER, useClass: BaseExceptionFilter }],
