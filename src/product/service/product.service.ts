@@ -4,7 +4,7 @@ import { Product } from '../schema/product.schema';
 import { Model } from 'mongoose';
 import { ProductDto } from '../dto/product.dto';
 import { ProductMapper } from '../mapping/product.mapper';
-import { StockEntryService } from '../../stockEntry/service/stockEntry.service';
+// import { StockEntryService } from '../../stockEntry/service/stockEntry.service';
 
 @Injectable()
 export class ProductService {
