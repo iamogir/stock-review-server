@@ -10,21 +10,19 @@ import {
 } from '@nestjs/common';
 import { StockEntryService } from '../service/stockEntry.service';
 import { StockEntryDto } from '../dto/stockEntry.dto';
-import { ProductHelperService } from '../../productHelper/service/productHelper.service';
 
 @Controller('stock_entries')
 export class StockEntryController {
   constructor(
     private readonly stockEntryService: StockEntryService,
-    private readonly productHelperService: ProductHelperService,
   ) {}
 
-  // @Post('/add_new_stock_entry')
-  // async addNewStockEntry(
-  //   @Body() product: StockEntryDto,
-  // ): Promise<StockEntryDto> {
-  //   return this.productHelperService.addNewStockEntry(product);
-  // }
+  @Post('/add_new_stock_entry')
+  async addNewStockEntry(
+    @Body() product: StockEntryDto,
+  ): Promise<StockEntryDto> {
+    return this.stockEntryService.addNewStockEntry(product);
+  }
 
   @Post('/add_new_entries_stack')
   async addNewEntriesStack(
