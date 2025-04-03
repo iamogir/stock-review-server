@@ -15,7 +15,7 @@ export class ProductService {
   ) {
     this.eventEmitter.on(
       'entry.added',
-      (id: Uint8Array) => void this.changeStatus(id, true),
+      (id: string) => void this.changeStatus(id, true),
     );
   }
   async getAllProducts(): Promise<ProductDto[]> {
@@ -76,15 +76,16 @@ export class ProductService {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
-  async changeStatus(id: Uint8Array, status: boolean): Promise<boolean> {
+  async changeStatus(id: string, status: boolean): Promise<boolean> {
     try {
       const changes = await this.productModel
         .findById(id)
-        .set({ status })
+        .set({ status: status }) //TODO dont work
         .exec();
       if (!changes) {
         throw new NotFoundException('Product not found');
       } else {
+        console.log('Change');
         return true;
       }
     } catch (error) {

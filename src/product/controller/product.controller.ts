@@ -4,9 +4,7 @@ import { ProductDto } from '../dto/product.dto';
 
 @Controller('products')
 export class ProductController {
-  constructor(
-    private readonly productService: ProductService,
-  ) {}
+  constructor(private readonly productService: ProductService) {}
 
   @Get('/get_all_products')
   async getAllProducts(): Promise<ProductDto[]> {
@@ -21,9 +19,7 @@ export class ProductController {
     return this.productService.addNewProductsStack(products);
   }
   @Delete('/delete_product_by_id/:id')
-  async deleteProductById(
-    @Param('id') id: string,
-  ): Promise<{ id: string; count: number }> {
+  async deleteProductById(@Param('id') id: string): Promise<string> {
     return this.productService.deleteProductById(id);
   }
 }

@@ -31,10 +31,12 @@ export class StockEntryService {
         updatedAt: new Date(Date.now()),
       });
       if (newProduct) {
-        this.eventEmitter.emit('entry.added', newProduct.productId.id);
-      }
-      // await this.productService.changeStatus(newProduct.productId.id, true);
-      return StockEntryMapper.toDto(await newProduct.save());
+        this.eventEmitter.emit(
+          'entry.added',
+          Buffer.from(newProduct.productId.id).toString('hex'),
+        );
+        return StockEntryMapper.toDto(await newProduct.save());
+      } else throw new NotFoundException('entry was not added');
     } catch (error) {
       throw new Error(
         'New stock entry was not added: ' + (error as Error).message,
