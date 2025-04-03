@@ -54,6 +54,18 @@ export class ProductService {
       );
     }
   }
+  async findProductByIdAndDelete(id: string): Promise<string> {
+    try {
+      const deletedProduct = await this.productModel
+        .findByIdAndDelete(id)
+        .exec();
+      if (!deletedProduct) {
+        throw new NotFoundException('Product not found');
+      } else return id;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
   async changeStatus(id: Uint8Array, status: boolean): Promise<boolean> {
     try {
       const changes = await this.productModel

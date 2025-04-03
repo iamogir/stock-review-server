@@ -28,8 +28,9 @@ export class ProductHelperService {
     try {
       const count =
         await this.stockEntryService.deleteAllEntriesByProductId(id);
-      const deleteResult = await this.productModel.findByIdAndDelete(id).exec();
-      if (!deleteResult) {
+      const deletedResult =
+        await this.productService.findProductByIdAndDelete(id);
+      if (!deletedResult) {
         throw new NotFoundException('Product not found');
       } else {
         return { id, count };
