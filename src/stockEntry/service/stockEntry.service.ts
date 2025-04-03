@@ -30,7 +30,20 @@ export class StockEntryService {
   //   }
   // }
 
-  async
+  async createEntry(newEntry: Partial<StockEntry>): StockEntry {
+    try {
+      const newProduct: StockEntry = new this.stockEntryModel({
+        ...newEntry,
+        createdAt: new Date(Date.now()),
+        updatedAt: new Date(Date.now()),
+      });
+      return await newProduct.save();
+    } catch (error) {
+      throw new Error(
+        'New stock entry was not added: ' + (error as Error).message,
+      );
+    }
+  }
 
   async addNewEntriesStack(
     entriesArray: StockEntryDto[],

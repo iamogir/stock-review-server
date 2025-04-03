@@ -3,7 +3,6 @@ import { ProductService } from '../../product/service/product.service';
 import { StockEntryService } from '../../stockEntry/service/stockEntry.service';
 import { StockEntryDto } from '../../stockEntry/dto/stockEntry.dto';
 import { StockEntryMapper } from '../../stockEntry/mapping/stockEntry.mapper';
-import { StockEntry } from '../../stockEntry/schema/stockEntry.schema';
 
 @Injectable()
 export class ProductHelperService {
@@ -14,13 +13,9 @@ export class ProductHelperService {
   async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
       const temp = StockEntryMapper.fromDto(product);
-      const newProduct: StockEntry = new this.stockEntryService.stockEntryModel({
-        ...temp,
-        createdAt: new Date(Date.now()),
-        updatedAt: new Date(Date.now()),
-      });
+      const newProduct = this.stockEntryService.createEntry(temp);
       await this.productService.changeStatus(newProduct.productId.id, true);
-      return StockEntryMapper.toDto(await newProduct.save());
+      return StockEntryMapper.toDto(newProduct);
     } catch (error) {
       throw new Error(
         'New stock entry was not added: ' + (error as Error).message,
