@@ -13,9 +13,7 @@ import { StockEntryDto } from '../dto/stockEntry.dto';
 
 @Controller('stock_entries')
 export class StockEntryController {
-  constructor(
-    private readonly stockEntryService: StockEntryService,
-  ) {}
+  constructor(private readonly stockEntryService: StockEntryService) {}
 
   @Post('/add_new_stock_entry')
   async addNewStockEntry(
