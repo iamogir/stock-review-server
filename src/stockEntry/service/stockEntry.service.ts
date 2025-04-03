@@ -4,15 +4,19 @@ import { Model, Types } from 'mongoose';
 import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
-import { ProductService } from '../../product/service/product.service';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class StockEntryService {
   constructor(
     @InjectModel(StockEntry.name)
     private readonly stockEntryModel: Model<StockEntry>,
-    private readonly productService: ProductService,
-  ) {}
+    private readonly eventEmitter: EventEmitter2,
+  ) {
+    this.eventEmitter.on('product.deleted', (id) =>
+      this.deleteAllEntriesByProductId(id),
+    );
+  }
 
   async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
