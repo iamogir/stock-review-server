@@ -13,8 +13,12 @@ export class StockEntryService {
     private readonly stockEntryModel: Model<StockEntry>,
     private readonly eventEmitter: EventEmitter2,
   ) {
-    this.eventEmitter.on('product.deleted', (id) =>
-      this.deleteAllEntriesByProductId(id),
+    this.eventEmitter.on(
+      'product.deleted',
+      (id: string) =>
+        void this.deleteAllEntriesByProductId(id).catch((error) =>
+          console.error('Fail: ', error),
+        ),
     );
   }
 
@@ -26,7 +30,10 @@ export class StockEntryService {
         createdAt: new Date(Date.now()),
         updatedAt: new Date(Date.now()),
       });
-      await this.productService.changeStatus(newProduct.productId.id, true);
+      if (newProduct) {
+        this.eventEmitter.emit('entry.added', newProduct.productId.id);
+      }
+      // await this.productService.changeStatus(newProduct.productId.id, true);
       return StockEntryMapper.toDto(await newProduct.save());
     } catch (error) {
       throw new Error(

@@ -4,7 +4,6 @@ import { Product } from '../schema/product.schema';
 import { Model } from 'mongoose';
 import { ProductDto } from '../dto/product.dto';
 import { ProductMapper } from '../mapping/product.mapper';
-import { StockEntryService } from '../../stockEntry/service/stockEntry.service';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
@@ -12,9 +11,13 @@ export class ProductService {
   constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<Product>,
-    // private readonly stockEntryService: StockEntryService,
     private readonly eventEmitter: EventEmitter2,
-  ) {}
+  ) {
+    this.eventEmitter.on(
+      'entry.added',
+      (id: Uint8Array) => void this.changeStatus(id, true),
+    );
+  }
   async getAllProducts(): Promise<ProductDto[]> {
     try {
       const products: Product[] = await this.productModel.find().exec();
@@ -58,10 +61,8 @@ export class ProductService {
       );
     }
   }
-  async deleteProductById(id: string): Promise<{ id: string; count: number }> {
+  async deleteProductById(id: string): Promise<string> {
     try {
-      // const count =
-      //   await this.stockEntryService.deleteAllEntriesByProductId(id);
       const deletedResult = await this.productModel
         .findByIdAndDelete(id)
         .exec();
@@ -69,7 +70,7 @@ export class ProductService {
         throw new NotFoundException('Product not found');
       } else {
         this.eventEmitter.emit('product.deleted', id);
-        return { id, count };
+        return id;
       }
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
