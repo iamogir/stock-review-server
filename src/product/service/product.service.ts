@@ -78,10 +78,11 @@ export class ProductService {
   }
   async changeStatus(id: string, status: boolean): Promise<boolean> {
     try {
-      const changes = await this.productModel
-        .findById(id)
-        .set({ status: status }) //TODO dont work
-        .exec();
+      const changes = await this.productModel.findByIdAndUpdate(
+        id,
+        { status },
+        { new: true },
+      );
       if (!changes) {
         throw new NotFoundException('Product not found');
       } else {
