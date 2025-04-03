@@ -11,7 +11,7 @@ export class ProductService {
   constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<Product>,
-    private readonly stockEntryService: StockEntryService,
+    // private readonly stockEntryService: StockEntryService,
   ) {}
   async getAllProducts(): Promise<ProductDto[]> {
     try {
@@ -56,20 +56,20 @@ export class ProductService {
       );
     }
   }
-  async deleteProductById(id: string): Promise<{ id: string; count: number }> {
-    try {
-      const count =
-        await this.stockEntryService.deleteAllEntriesByProductId(id);
-      const deleteResult = await this.productModel.findByIdAndDelete(id).exec();
-      if (!deleteResult) {
-        throw new NotFoundException('Product not found');
-      } else {
-        return { id, count };
-      }
-    } catch (error) {
-      throw new Error('Something went wrong: ' + (error as Error).message);
-    }
-  }
+  // async deleteProductById(id: string): Promise<{ id: string; count: number }> {
+  //   try {
+  //     const count =
+  //       await this.stockEntryService.deleteAllEntriesByProductId(id);
+  //     const deleteResult = await this.productModel.findByIdAndDelete(id).exec();
+  //     if (!deleteResult) {
+  //       throw new NotFoundException('Product not found');
+  //     } else {
+  //       return { id, count };
+  //     }
+  //   } catch (error) {
+  //     throw new Error('Something went wrong: ' + (error as Error).message);
+  //   }
+  // }
   async changeStatus(id: Uint8Array, status: boolean): Promise<boolean> {
     try {
       const changes = await this.productModel

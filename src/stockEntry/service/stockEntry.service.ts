@@ -11,24 +11,26 @@ export class StockEntryService {
   constructor(
     @InjectModel(StockEntry.name)
     private readonly stockEntryModel: Model<StockEntry>,
-    private readonly productService: ProductService,
+    // private readonly productService: ProductService,
   ) {}
-  async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
-    try {
-      const temp = StockEntryMapper.fromDto(product);
-      const newProduct: StockEntry = new this.stockEntryModel({
-        ...temp,
-        createdAt: new Date(Date.now()),
-        updatedAt: new Date(Date.now()),
-      });
-      await this.productService.changeStatus(newProduct.productId.id, true);
-      return StockEntryMapper.toDto(await newProduct.save());
-    } catch (error) {
-      throw new Error(
-        'New stock entry was not added: ' + (error as Error).message,
-      );
-    }
-  }
+  // async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
+  //   try {
+  //     const temp = StockEntryMapper.fromDto(product);
+  //     const newProduct: StockEntry = new this.stockEntryModel({
+  //       ...temp,
+  //       createdAt: new Date(Date.now()),
+  //       updatedAt: new Date(Date.now()),
+  //     });
+  //     await this.productService.changeStatus(newProduct.productId.id, true);
+  //     return StockEntryMapper.toDto(await newProduct.save());
+  //   } catch (error) {
+  //     throw new Error(
+  //       'New stock entry was not added: ' + (error as Error).message,
+  //     );
+  //   }
+  // }
+
+  async
 
   async addNewEntriesStack(
     entriesArray: StockEntryDto[],
