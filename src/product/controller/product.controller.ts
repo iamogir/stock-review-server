@@ -22,10 +22,10 @@ export class ProductController {
   async addNewProductsStack(@Body() products: ProductDto[]): Promise<ProductDto[]> {
     return this.productService.addNewProductsStack(products);
   }
-  @Delete('/delete_product_by_id/:id')
-  async deleteProductById(
-    @Param('id') id: string,
-  ): Promise<{ id: string; count: number }> {
-    return this.productHelperService.deleteProductById(id);
-  }
+  // @Delete('/delete_product_by_id/:id')
+  // async deleteProductById(
+  //   @Param('id') id: string,
+  // ): Promise<{ id: string; count: number }> {
+  //   return this.productHelperService.deleteProductById(id);
+  // }
 }

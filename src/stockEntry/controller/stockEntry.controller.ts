@@ -19,12 +19,12 @@ export class StockEntryController {
     private readonly productHelperService: ProductHelperService,
   ) {}
 
-  @Post('/add_new_stock_entry')
-  async addNewStockEntry(
-    @Body() product: StockEntryDto,
-  ): Promise<StockEntryDto> {
-    return this.productHelperService.addNewStockEntry(product);
-  }
+  // @Post('/add_new_stock_entry')
+  // async addNewStockEntry(
+  //   @Body() product: StockEntryDto,
+  // ): Promise<StockEntryDto> {
+  //   return this.productHelperService.addNewStockEntry(product);
+  // }
 
   @Post('/add_new_entries_stack')
   async addNewEntriesStack(

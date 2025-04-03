@@ -4,12 +4,14 @@ import { Product } from '../schema/product.schema';
 import { Model } from 'mongoose';
 import { ProductDto } from '../dto/product.dto';
 import { ProductMapper } from '../mapping/product.mapper';
+import { StockEntryService } from '../../stockEntry/service/stockEntry.service';
 
 @Injectable()
 export class ProductService {
   constructor(
     @InjectModel(Product.name)
     private readonly productModel: Model<Product>,
+    private readonly stockEntryService: StockEntryService,
   ) {}
   async getAllProducts(): Promise<ProductDto[]> {
     try {
@@ -54,14 +56,18 @@ export class ProductService {
       );
     }
   }
-  async findProductByIdAndDelete(id: string): Promise<string> {
+  async deleteProductById(id: string): Promise<{ id: string; count: number }> {
     try {
-      const deletedProduct = await this.productModel
+      const count =
+        await this.stockEntryService.deleteAllEntriesByProductId(id);
+      const deletedResult = await this.productModel
         .findByIdAndDelete(id)
         .exec();
-      if (!deletedProduct) {
+      if (!deletedResult) {
         throw new NotFoundException('Product not found');
-      } else return id;
+      } else {
+        return { id, count };
+      }
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }

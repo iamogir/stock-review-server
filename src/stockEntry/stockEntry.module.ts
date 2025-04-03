@@ -3,7 +3,6 @@ import { StockEntry, StockEntrySchema } from './schema/stockEntry.schema';
 import { Module } from '@nestjs/common';
 import { StockEntryController } from './controller/stockEntry.controller';
 import { StockEntryService } from './service/stockEntry.service';
-// import { ProductModule } from '../product/product.module';
 import { ProductHelperModule } from '../productHelper/productHelper.module';
 
 @Module({

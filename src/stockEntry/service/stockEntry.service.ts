@@ -4,22 +4,26 @@ import { Model, Types } from 'mongoose';
 import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
+import { ProductService } from '../../product/service/product.service';
 
 @Injectable()
 export class StockEntryService {
   constructor(
     @InjectModel(StockEntry.name)
     private readonly stockEntryModel: Model<StockEntry>,
+    private readonly productService: ProductService,
   ) {}
 
-  async createEntry(newEntry: Partial<StockEntry>): Promise<StockEntry> {
+  async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
+      const temp = StockEntryMapper.fromDto(product);
       const newProduct: StockEntry = new this.stockEntryModel({
-        ...newEntry,
+        ...temp,
         createdAt: new Date(Date.now()),
         updatedAt: new Date(Date.now()),
       });
-      return await newProduct.save();
+      await this.productService.changeStatus(newProduct.productId.id, true);
+      return StockEntryMapper.toDto(await newProduct.save());
     } catch (error) {
       throw new Error(
         'New stock entry was not added: ' + (error as Error).message,
