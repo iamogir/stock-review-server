@@ -15,7 +15,10 @@ export class ProductService {
   ) {}
   @OnEvent('entry.added')
   async handleEntryAdded(id: string) {
-    return await this.changeStatus(id, true);
+    const product = await this.productModel.findById(id).exec();
+    if (product && product.status) {
+      return false;
+    } else return await this.changeStatus(id, true);
   }
   async getAllProducts(): Promise<ProductDto[]> {
     try {
