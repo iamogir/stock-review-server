@@ -1,12 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Schema, Types } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import ObjectId = module
-import { ProductMapper } from '../../product/mapping/product.mapper';
 
 @Injectable()
 export class StockEntryService {
@@ -48,7 +46,7 @@ export class StockEntryService {
 
   async addNewEntriesStack(
     entriesArray: StockEntryDto[],
-  ): Promise<StockEntryDto[]> {
+  ): Promise<{ products: string[]; entries: StockEntryDto[] }> {
     try {
       const temp: Partial<StockEntry>[] = [];
       entriesArray.map((en) =>
