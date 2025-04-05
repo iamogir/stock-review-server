@@ -1,16 +1,27 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 
 @Injectable()
 export class StockEntryService {
   constructor(
     @InjectModel(StockEntry.name)
     private readonly stockEntryModel: Model<StockEntry>,
-  ) {}
+    private readonly eventEmitter: EventEmitter2,
+  ) {
+    this.eventEmitter.on(
+      'product.deleted',
+      (id: string) =>
+        void this.deleteAllEntriesByProductId(id).catch((error) =>
+          console.error('Fail: ', error),
+        ),
+    );
+  }
+
   async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
       const temp = StockEntryMapper.fromDto(product);
@@ -19,7 +30,36 @@ export class StockEntryService {
         createdAt: new Date(Date.now()),
         updatedAt: new Date(Date.now()),
       });
-      return StockEntryMapper.toDto(await newProduct.save());
+      if (newProduct) {
+        this.eventEmitter.emit(
+          'entry.added',
+          Buffer.from(newProduct.productId.id).toString('hex'),
+        );
+        return StockEntryMapper.toDto(await newProduct.save());
+      } else throw new NotFoundException('entry was not added');
+    } catch (error) {
+      throw new Error(
+        'New stock entry was not added: ' + (error as Error).message,
+      );
+    }
+  }
+
+  async addNewEntriesStack(
+    entriesArray: StockEntryDto[],
+  ): Promise<StockEntryDto[]> {
+    try {
+      const temp: Partial<StockEntry>[] = [];
+      entriesArray.map((en) =>
+        temp.push({
+          ...StockEntryMapper.fromDto(en),
+          createdAt: new Date(Date.now()),
+          updatedAt: new Date(Date.now()),
+        }),
+      );
+      const newProducts: Partial<StockEntry>[] =
+        await this.stockEntryModel.insertMany(temp);
+
+      return newProducts.map((el: StockEntry) => StockEntryMapper.toDto(el));
     } catch (error) {
       throw new Error(
         'New stock entry was not added: ' + (error as Error).message,
@@ -63,6 +103,21 @@ export class StockEntryService {
           'Stock entry with id: ' + id + ' was not found',
         );
       } else return id;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
+
+  async deleteAllEntriesByProductId(id: string): Promise<number> {
+    try {
+      const deleteResult = await this.stockEntryModel.deleteMany({
+        productId: new Types.ObjectId(id),
+      });
+      if (!deleteResult) {
+        throw new NotFoundException('Entries by this product were not found');
+      } else {
+        return deleteResult.deletedCount;
+      }
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
