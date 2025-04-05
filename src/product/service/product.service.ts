@@ -33,7 +33,7 @@ export class ProductService {
     try {
       const temp = ProductMapper.fromDto(product);
       const newProduct: Product = new this.productModel({
-        ...temp,
+        ...temp, // { status: false, totalQuantity: 0 }
         createdAt: new Date(),
         updatedAt: new Date(),
       });
@@ -88,6 +88,22 @@ export class ProductService {
       } else {
         console.log('Change');
         return true;
+      }
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
+  async changeTotalQuantity(id: string, quantity: number): Promise<number> {
+    try {
+      const changes = await this.productModel.findByIdAndUpdate(
+        id,
+        { quantity },
+        { new: true },
+      );
+      if (!changes) {
+        throw new NotFoundException('Product not found');
+      } else {
+        return quantity;
       }
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
