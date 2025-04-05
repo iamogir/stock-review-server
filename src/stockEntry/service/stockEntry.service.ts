@@ -1,10 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model, Schema, Types } from 'mongoose';
 import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import ObjectId = module
+import { ProductMapper } from '../../product/mapping/product.mapper';
 
 @Injectable()
 export class StockEntryService {
@@ -59,15 +61,25 @@ export class StockEntryService {
       const newProducts: Partial<StockEntry>[] =
         await this.stockEntryModel.insertMany(temp);
       if (!newProducts) throw new Error('Smth went wrong');
-      newProducts.reduce((acc: string[], entry: StockEntry) => {
-        const prId: string = Buffer.from(entry.productId.id).toString('hex');
-        if (!acc.includes(prId)) {
-          acc.push(prId);
-          this.eventEmitter.emit('entry.added', prId);
-        }
-        return acc;
-      }, []);
-      return newProducts.map((el: StockEntry) => StockEntryMapper.toDto(el));
+      const returnObj = {
+        products: [] as string[],
+        entries: [] as StockEntryDto[],
+      };
+      returnObj.products = newProducts.reduce(
+        (acc: string[], entry: StockEntry) => {
+          const prId: string = Buffer.from(entry.productId.id).toString('hex');
+          if (!acc.includes(prId)) {
+            acc.push(prId);
+            this.eventEmitter.emit('entry.added', prId);
+          }
+          return acc;
+        },
+        [],
+      );
+      returnObj.entries = newProducts.map((el: StockEntry) =>
+        StockEntryMapper.toDto(el),
+      );
+      return returnObj;
     } catch (error) {
       throw new Error(
         'New stock entry was not added: ' + (error as Error).message,
