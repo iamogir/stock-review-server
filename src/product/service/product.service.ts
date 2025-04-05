@@ -5,6 +5,8 @@ import { Model } from 'mongoose';
 import { ProductDto } from '../dto/product.dto';
 import { ProductMapper } from '../mapping/product.mapper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { StockEntryDto } from '../../stockEntry/dto/stockEntry.dto';
+import { StockEntryMapper } from '../../stockEntry/mapping/stockEntry.mapper';
 
 @Injectable()
 export class ProductService {
@@ -93,18 +95,38 @@ export class ProductService {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
-  async changeTotalQuantity(id: string, quantity: number): Promise<number> {
+  // async changeTotalQuantity(id: string, quantity: number): Promise<number> {
+  //   try {
+  //     const changes = await this.productModel.findByIdAndUpdate(
+  //       id,
+  //       { quantity },
+  //       { new: true },
+  //     );
+  //     if (!changes) {
+  //       throw new NotFoundException('Product not found');
+  //     } else {
+  //       return quantity;
+  //     }
+  //   } catch (error) {
+  //     throw new Error('Something went wrong: ' + (error as Error).message);
+  //   }
+  // }
+  async updateProductById(
+    id: string,
+    changes: Partial<ProductDto>,
+  ): Promise<ProductDto> {
     try {
-      const changes = await this.productModel.findByIdAndUpdate(
+      const updatedProduct = await this.productModel.findByIdAndUpdate(
         id,
-        { quantity },
+        changes,
         { new: true },
       );
-      if (!changes) {
-        throw new NotFoundException('Product not found');
-      } else {
-        return quantity;
+      if (!updatedProduct) {
+        throw new NotFoundException(
+          'Product with id: ' + id + ' was not found',
+        );
       }
+      return ProductMapper.toDto(updatedProduct);
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
