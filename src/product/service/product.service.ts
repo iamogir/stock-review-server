@@ -4,7 +4,7 @@ import { Product } from '../schema/product.schema';
 import { Model } from 'mongoose';
 import { ProductDto } from '../dto/product.dto';
 import { ProductMapper } from '../mapping/product.mapper';
-import { EventEmitter2 } from '@nestjs/event-emitter';
+import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
 
 @Injectable()
 export class ProductService {
@@ -12,10 +12,10 @@ export class ProductService {
     @InjectModel(Product.name)
     private readonly productModel: Model<Product>,
     private readonly eventEmitter: EventEmitter2,
-  ) {
-    this.eventEmitter.on('entry.added', async (id: string) => {
-      return await this.changeStatus(id, true);
-    });
+  ) {}
+  @OnEvent('entry.added')
+  async handleEntryAdded(id: string) {
+    return await this.changeStatus(id, true);
   }
   async getAllProducts(): Promise<ProductDto[]> {
     try {

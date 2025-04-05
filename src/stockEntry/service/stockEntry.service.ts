@@ -5,6 +5,7 @@ import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import loader from 'ts-loader';
 
 @Injectable()
 export class StockEntryService {
@@ -63,15 +64,30 @@ export class StockEntryService {
         products: [] as string[],
         entries: [] as StockEntryDto[],
       };
-      newProducts.reduce(async (acc: string[], entry: StockEntry) => {
-        const prId: string = Buffer.from(entry.productId.id).toString('hex');
-        if (!acc.includes(prId)) {
-          acc.push(prId);
-          const result = await this.eventEmitter.emitAsync('entry.added', prId);
-          if (result) returnObj.products.push(prId);
+      // newProducts.reduce(async (acc: string[], entry: StockEntry) => {
+      //     const prId: string = Buffer.from(entry.productId.id).toString('hex');
+      //     if (!acc.includes(prId)) {
+      //       acc.push(prId);
+      //       const result = await this.eventEmitter.emitAsync('entry.added', prId);
+      //       if (result) returnObj.products.push(prId);
+      //     }
+      //     return acc;
+      //   }, Promise.resolve([]));
+
+      for (const entry of newProducts) {
+        if (entry.productId) {
+          const prId = Buffer.from(entry.productId.id).toString('hex');
+          if (!returnObj.products.includes(prId)) {
+            returnObj.products.push(prId);
+            const result = await this.eventEmitter.emitAsync(
+              'entry.added',
+              prId,
+            );
+            if (result) returnObj.products.push(prId);
+          }
         }
-        return acc;
-      }, []);
+      }
+
       returnObj.entries = newProducts.map((el: StockEntry) =>
         StockEntryMapper.toDto(el),
       );
