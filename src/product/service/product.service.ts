@@ -13,10 +13,9 @@ export class ProductService {
     private readonly productModel: Model<Product>,
     private readonly eventEmitter: EventEmitter2,
   ) {
-    this.eventEmitter.on(
-      'entry.added',
-      (id: string) => void this.changeStatus(id, true),
-    );
+    this.eventEmitter.on('entry.added', async (id: string) => {
+      return await this.changeStatus(id, true);
+    });
   }
   async getAllProducts(): Promise<ProductDto[]> {
     try {

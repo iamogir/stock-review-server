@@ -63,17 +63,15 @@ export class StockEntryService {
         products: [] as string[],
         entries: [] as StockEntryDto[],
       };
-      returnObj.products = newProducts.reduce(
-        (acc: string[], entry: StockEntry) => {
-          const prId: string = Buffer.from(entry.productId.id).toString('hex');
-          if (!acc.includes(prId)) {
-            acc.push(prId);
-            this.eventEmitter.emit('entry.added', prId);
-          }
-          return acc;
-        },
-        [],
-      );
+      newProducts.reduce(async (acc: string[], entry: StockEntry) => {
+        const prId: string = Buffer.from(entry.productId.id).toString('hex');
+        if (!acc.includes(prId)) {
+          acc.push(prId);
+          const result = await this.eventEmitter.emitAsync('entry.added', prId);
+          if (result) returnObj.products.push(prId);
+        }
+        return acc;
+      }, []);
       returnObj.entries = newProducts.map((el: StockEntry) =>
         StockEntryMapper.toDto(el),
       );
