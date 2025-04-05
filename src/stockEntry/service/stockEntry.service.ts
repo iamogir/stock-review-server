@@ -59,24 +59,17 @@ export class StockEntryService {
       const newProducts: Partial<StockEntry>[] =
         await this.stockEntryModel.insertMany(temp);
       if (!newProducts) throw new Error('Smth went wrong');
-      const newEntries: StockEntryDto[] = newProducts.map((el: StockEntry) =>
-        StockEntryMapper.toDto(el),
-      );
-      const productIdArr = newEntries.reduce((acc: string[], entry) => {
-        if (!acc.includes(entry.productId)) {
-          acc.push(entry.productId);
+      newProducts.reduce((acc: string[], entry: StockEntry) => {
+        const prId: string = Buffer.from(entry.productId.id).toString('hex');
+        if (!acc.includes(prId)) {
+          acc.push(prId);
+          this.eventEmitter.emit(
+            'entry.added',
+            Buffer.from(entry.productId.id).toString('hex'),
+          );
         }
         return acc;
       }, []);
-      if (productIdArr) {
-        newProducts.map((en) =>
-          this.eventEmitter.emit(
-            'entry.added',
-            Buffer.from(en.productId.id).toString('hex'),
-          ),
-        );
-
-      } else throw new NotFoundException('entry was not added');
       return newProducts.map((el: StockEntry) => StockEntryMapper.toDto(el));
     } catch (error) {
       throw new Error(
