@@ -11,6 +11,7 @@ export class Product extends Document {
   @Prop({ required: true }) status: boolean;
   @Prop({ required: true }) createdAt: Date;
   @Prop({ required: true }) updatedAt: Date;
+  @Prop({ required: true }) totalQuantity: number;
 }
 
 export const ProductSchema = SchemaFactory.createForClass(Product);
