@@ -5,8 +5,6 @@ import { Model } from 'mongoose';
 import { ProductDto } from '../dto/product.dto';
 import { ProductMapper } from '../mapping/product.mapper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import { StockEntryDto } from '../../stockEntry/dto/stockEntry.dto';
-import { StockEntryMapper } from '../../stockEntry/mapping/stockEntry.mapper';
 
 @Injectable()
 export class ProductService {
@@ -79,6 +77,7 @@ export class ProductService {
     }
   }
   async changeStatus(id: string, status: boolean): Promise<boolean> {
+    console.log('status');
     try {
       const changes = await this.productModel.findByIdAndUpdate(
         id,
