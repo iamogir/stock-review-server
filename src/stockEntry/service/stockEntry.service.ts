@@ -63,10 +63,7 @@ export class StockEntryService {
         const prId: string = Buffer.from(entry.productId.id).toString('hex');
         if (!acc.includes(prId)) {
           acc.push(prId);
-          this.eventEmitter.emit(
-            'entry.added',
-            Buffer.from(entry.productId.id).toString('hex'),
-          );
+          this.eventEmitter.emit('entry.added', prId);
         }
         return acc;
       }, []);
