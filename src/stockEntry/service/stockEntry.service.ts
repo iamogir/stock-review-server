@@ -70,6 +70,7 @@ export class StockEntryService {
             const result = (await this.eventEmitter.emitAsync(
               'entry.added',
               prId,
+              entry.quantityUnits,
             )) as unknown as boolean;
             console.log(result + ' RESULT');
             if (result === true) returnObj.products.push(prId);
