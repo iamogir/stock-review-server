@@ -25,11 +25,7 @@ export class ProductService {
     const product = await this.productModel.findById(id).exec();
     if (product) {
       const quantity = product.totalQuantity - quantityUnits;
-      if (quantity <= 0) {
-        await this.deleteProductById(id);
-      } else {
-        await this.changeTotalQuantity(id, quantity);
-      }
+      await this.changeTotalQuantity(id, quantity < 0 ? 0 : quantity);
     }
   }
   async getAllProducts(): Promise<ProductDto[]> {
@@ -108,12 +104,16 @@ export class ProductService {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
-  async changeTotalQuantity(id: string, quantity: number): Promise<boolean> {
+  async changeTotalQuantity(
+    id: string,
+    totalQuantity: number,
+  ): Promise<boolean> {
     console.log('quantity');
     try {
+      console.log(totalQuantity);
       const changes = await this.productModel.findByIdAndUpdate(
         id,
-        { quantity },
+        { totalQuantity },
         { new: true },
       );
       if (!changes) {
