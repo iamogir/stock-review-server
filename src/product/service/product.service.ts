@@ -14,9 +14,10 @@ export class ProductService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
   @OnEvent('entry.added')
-  async handleEntryAdded(id: string) {
+  async handleEntryAdded(id: string): Promise<boolean> {
     const product = await this.productModel.findById(id).exec();
     if (product && product.status) {
+      console.log('FALSE');
       return false;
     } else return await this.changeStatus(id, true);
   }

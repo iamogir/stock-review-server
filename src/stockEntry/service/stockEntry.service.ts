@@ -68,12 +68,13 @@ export class StockEntryService {
         if (entry.productId) {
           const prId = Buffer.from(entry.productId.id).toString('hex');
           if (!returnObj.products.includes(prId)) {
-            returnObj.products.push(prId);
-            const result = await this.eventEmitter.emitAsync(
+            const result = (await this.eventEmitter.emitAsync(
               'entry.added',
               prId,
-            );
-            if (result) returnObj.products.push(prId);
+            )) as unknown as boolean;
+            console.log(result + ' RESULT');
+            if (result === true) returnObj.products.push(prId);
+            console.log(returnObj.products);
           }
         }
       }
