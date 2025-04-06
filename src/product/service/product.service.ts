@@ -20,6 +20,18 @@ export class ProductService {
       return false;
     } else return await this.changeStatus(id, true);
   }
+  @OnEvent('entry.deleted')
+  async handleEntryDeleted(id: string, quantityUnits: number) {
+    const product = await this.productModel.findById(id).exec();
+    if (product) {
+      const quantity = product.totalQuantity - quantityUnits;
+      if (quantity <= 0) {
+        await this.deleteProductById(id);
+      } else {
+        await this.changeTotalQuantity(id, quantity);
+      }
+    }
+  }
   async getAllProducts(): Promise<ProductDto[]> {
     try {
       const products: Product[] = await this.productModel.find().exec();
