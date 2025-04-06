@@ -5,7 +5,6 @@ import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
-import loader from 'ts-loader';
 
 @Injectable()
 export class StockEntryService {
@@ -64,15 +63,6 @@ export class StockEntryService {
         products: [] as string[],
         entries: [] as StockEntryDto[],
       };
-      // newProducts.reduce(async (acc: string[], entry: StockEntry) => {
-      //     const prId: string = Buffer.from(entry.productId.id).toString('hex');
-      //     if (!acc.includes(prId)) {
-      //       acc.push(prId);
-      //       const result = await this.eventEmitter.emitAsync('entry.added', prId);
-      //       if (result) returnObj.products.push(prId);
-      //     }
-      //     return acc;
-      //   }, Promise.resolve([]));
 
       for (const entry of newProducts) {
         if (entry.productId) {
@@ -134,7 +124,13 @@ export class StockEntryService {
         throw new NotFoundException(
           'Stock entry with id: ' + id + ' was not found',
         );
-      } else return id;
+      } else {
+        await this.eventEmitter.emitAsync(
+          'entry.deleted',
+          Buffer.from(product.productId.id).toString('hex'),
+        );
+        return id;
+      }
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }

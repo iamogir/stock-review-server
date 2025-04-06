@@ -49,7 +49,7 @@ export class ProductService {
       const temp: Partial<Product>[] = [];
       products.map((pr) =>
         temp.push({
-          ...ProductMapper.fromDto(pr),
+          ...ProductMapper.fromDto(pr), // { status: false, totalQuantity: 0 }
           createdAt: new Date(),
           updatedAt: new Date(),
         }),
@@ -84,6 +84,24 @@ export class ProductService {
       const changes = await this.productModel.findByIdAndUpdate(
         id,
         { status },
+        { new: true },
+      );
+      if (!changes) {
+        throw new NotFoundException('Product not found');
+      } else {
+        console.log('Change');
+        return true;
+      }
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
+  async changeTotalQuantity(id: string, quantity: number): Promise<boolean> {
+    console.log('quantity');
+    try {
+      const changes = await this.productModel.findByIdAndUpdate(
+        id,
+        { quantity },
         { new: true },
       );
       if (!changes) {
