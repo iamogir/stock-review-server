@@ -30,13 +30,12 @@ export class StockEntryService {
         createdAt: new Date(Date.now()),
         updatedAt: new Date(Date.now()),
       });
-      if (newProduct) {
-        this.eventEmitter.emit(
-          'entry.added',
-          Buffer.from(newProduct.productId.id).toString('hex'),
-        );
-        return StockEntryMapper.toDto(await newProduct.save());
-      } else throw new NotFoundException('entry was not added');
+      if (!newProduct) throw new NotFoundException('entry was not added');
+      this.eventEmitter.emit(
+        'entry.added',
+        Buffer.from(newProduct.productId.id).toString('hex'),
+      );
+      return StockEntryMapper.toDto(await newProduct.save());
     } catch (error) {
       throw new Error(
         'New stock entry was not added: ' + (error as Error).message,
