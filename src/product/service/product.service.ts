@@ -14,12 +14,15 @@ export class ProductService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
   @OnEvent('entry.added')
-  async handleEntryAdded(id: string) {
+  async handleEntryAdded(id: string, quantityUnits: number): Promise<boolean> {
     const product = await this.productModel.findById(id).exec();
-    if (product && product.status) {
-      console.log('FALSE');
-      return false;
-    } else return await this.changeStatus(id, true);
+    if (product) {
+      await this.changeTotalQuantity(id, product.totalQuantity + quantityUnits);
+      if (product.status) {
+        console.log('FALSE');
+        return false;
+      } else return await this.changeStatus(id, true);
+    } else throw new NotFoundException(`Product with id ${id} not found`);
   }
   @OnEvent('entry.deleted')
   async handleEntryDeleted(id: string, quantityUnits: number) {
