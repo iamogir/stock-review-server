@@ -30,6 +30,9 @@ export class ProductService {
     if (product) {
       const quantity = product.totalQuantity - quantityUnits;
       await this.changeTotalQuantity(id, quantity < 0 ? 0 : quantity);
+      if (quantity <= 0) {
+        await this.changeStatus(id, false);
+      }
     }
   }
   async getAllProducts(): Promise<ProductDto[]> {
