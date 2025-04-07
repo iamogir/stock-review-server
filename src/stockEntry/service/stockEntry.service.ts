@@ -14,9 +14,10 @@ export class StockEntryService {
     private readonly eventEmitter: EventEmitter2,
   ) {
     this.eventEmitter.on(
+      //TODO maybe change to emitAsync and return { count }
       'product.deleted',
       (id: string) =>
-        void this.deleteAllEntriesByProductId(id).catch((error) => //TODO maybe change to emitAsync and return { count }
+        void this.deleteAllEntriesByProductId(id).catch((error) =>
           console.error('Fail: ', error),
         ),
     );
@@ -154,6 +155,7 @@ export class StockEntryService {
       if (!deleteResult) {
         throw new NotFoundException('Entries by this product were not found');
       } else {
+        await this.eventEmitter.emitAsync('entry.deleted', id, 0);
         return deleteResult.deletedCount;
       }
     } catch (error) {
