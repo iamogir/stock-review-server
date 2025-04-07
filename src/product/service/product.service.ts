@@ -25,10 +25,10 @@ export class ProductService {
     } else throw new NotFoundException(`Product with id ${id} not found`);
   }
   @OnEvent('entry.deleted')
-  async handleEntryDeleted(id: string, quantityUnits: number) {
+  async handleEntryDeleted(id: string, quantityUnitsToDelete: number) {
     const product = await this.productModel.findById(id).exec();
-    if (product) {
-      const quantity = product.totalQuantity - quantityUnits;
+    if (product && product.totalQuantity > 0) {
+      const quantity = product.totalQuantity - quantityUnitsToDelete;
       await this.changeTotalQuantity(id, quantity < 0 ? 0 : quantity);
       if (quantity <= 0) {
         await this.changeStatus(id, false);
