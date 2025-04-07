@@ -16,7 +16,7 @@ export class StockEntryService {
     this.eventEmitter.on(
       'product.deleted',
       (id: string) =>
-        void this.deleteAllEntriesByProductId(id).catch((error) =>
+        void this.deleteAllEntriesByProductId(id).catch((error) => //TODO maybe change to emitAsync and return { count }
           console.error('Fail: ', error),
         ),
     );
@@ -24,23 +24,31 @@ export class StockEntryService {
 
   async addNewStockEntry(product: StockEntryDto): Promise<StockEntryDto> {
     try {
-      const temp = StockEntryMapper.fromDto(product);
-      const newProduct: StockEntry = new this.stockEntryModel({
-        ...temp,
-        createdAt: new Date(Date.now()),
-        updatedAt: new Date(Date.now()),
-      });
-      if (!newProduct) throw new NotFoundException('entry was not added');
-      this.eventEmitter.emit(
-        'entry.added',
-        Buffer.from(newProduct.productId.id).toString('hex'),
-      );
-      return StockEntryMapper.toDto(await newProduct.save());
+      const result = await this.addNewEntriesStack([product]);
+      return result.entries[0];
     } catch (error) {
       throw new Error(
         'New stock entry was not added: ' + (error as Error).message,
       );
     }
+    // try {
+    //   const temp = StockEntryMapper.fromDto(product);
+    //   const newProduct: StockEntry = new this.stockEntryModel({
+    //     ...temp,
+    //     createdAt: new Date(Date.now()),
+    //     updatedAt: new Date(Date.now()),
+    //   });
+    //   if (!newProduct) throw new NotFoundException('entry was not added');
+    //   this.eventEmitter.emit(
+    //     'entry.added',
+    //     Buffer.from(newProduct.productId.id).toString('hex'),
+    //   );
+    //   return StockEntryMapper.toDto(await newProduct.save());
+    // } catch (error) {
+    //   throw new Error(
+    //     'New stock entry was not added: ' + (error as Error).message,
+    //   );
+    // }
   }
 
   async addNewEntriesStack(
