@@ -137,7 +137,7 @@ export class StockEntryService {
       } else {
         await this.eventEmitter.emitAsync(
           'entry.deleted',
-          Buffer.from(product.productId.id).toString('hex'),
+          id,
           product.quantityUnits,
         );
         return id;

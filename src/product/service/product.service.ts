@@ -53,16 +53,24 @@ export class ProductService {
   }
   async addNewProduct(product: ProductDto): Promise<ProductDto> {
     try {
-      const temp = ProductMapper.fromDto(product);
-      const newProduct: Product = new this.productModel({
-        ...temp, // { status: false, totalQuantity: 0 }
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      });
-      return ProductMapper.toDto(await newProduct.save());
+      const result = await this.addNewProductsStack([product]);
+      return result[0];
     } catch (error) {
-      throw new Error('New product was not added: ' + (error as Error).message);
+      throw new Error(
+        'New products were not added: ' + (error as Error).message,
+      );
     }
+    // try {
+    //   const temp = ProductMapper.fromDto(product);
+    //   const newProduct: Product = new this.productModel({
+    //     ...temp, // { status: false, totalQuantity: 0 }
+    //     createdAt: new Date(),
+    //     updatedAt: new Date(),
+    //   });
+    //   return ProductMapper.toDto(await newProduct.save());
+    // } catch (error) {
+    //   throw new Error('New product was not added: ' + (error as Error).message);
+    // }
   }
   async addNewProductsStack(products: ProductDto[]): Promise<ProductDto[]> {
     try {
