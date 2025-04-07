@@ -155,7 +155,7 @@ export class StockEntryService {
       if (!deleteResult) {
         throw new NotFoundException('Entries by this product were not found');
       } else {
-        await this.eventEmitter.emitAsync('entry.deleted', id, 0);
+        await this.eventEmitter.emitAsync('entry.deleted', id, -1);
         return deleteResult.deletedCount;
       }
     } catch (error) {

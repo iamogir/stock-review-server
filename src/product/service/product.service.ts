@@ -27,12 +27,17 @@ export class ProductService {
   @OnEvent('entry.deleted')
   async handleEntryDeleted(id: string, quantityUnitsToDelete: number) {
     const product = await this.productModel.findById(id).exec();
-    if (product && product.totalQuantity > 0) {
-      const quantity = product.totalQuantity - quantityUnitsToDelete;
-      await this.changeTotalQuantity(id, quantity < 0 ? 0 : quantity);
-      if (quantity <= 0) {
-        await this.changeStatus(id, false);
-      }
+    if (!product || product.totalQuantity <= 0) return;
+
+    if (quantityUnitsToDelete < 0) {
+      await this.changeTotalQuantity(id, 0);
+      await this.changeStatus(id, false);
+      return;
+    }
+    const quantity = product.totalQuantity - quantityUnitsToDelete;
+    await this.changeTotalQuantity(id, quantity < 0 ? 0 : quantity);
+    if (quantity <= 0) {
+      await this.changeStatus(id, false);
     }
   }
   async getAllProducts(): Promise<ProductDto[]> {
