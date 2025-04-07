@@ -53,6 +53,7 @@ export class StockEntryService {
   }
 
   async addNewEntriesStack(
+    //TODO clean and beauty
     entriesArray: StockEntryDto[],
   ): Promise<{ products: string[]; entries: StockEntryDto[] }> {
     try {
