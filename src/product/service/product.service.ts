@@ -19,7 +19,6 @@ export class ProductService {
     if (product) {
       await this.changeTotalQuantity(id, product.totalQuantity + quantityUnits);
       if (product.status) {
-        console.log('FALSE');
         return false;
       } else return await this.changeStatus(id, true);
     } else throw new NotFoundException(`Product with id ${id} not found`);
@@ -28,9 +27,6 @@ export class ProductService {
   async handleEntryDeleted(id: string, quantityUnitsToDelete: number) {
     console.log('START');
     const product = await this.productModel.findById(id).exec();
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    console.log(!product, product.totalQuantity <= 0);
     if (!product || product.totalQuantity <= 0) return;
 
     console.log('before');

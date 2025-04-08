@@ -69,6 +69,7 @@ export class StockEntryService {
         await this.stockEntryModel.insertMany(temp);
       if (!newProducts) throw new Error('Smth went wrong');
       const returnObj = {
+        productsStatusChanged: [] as string[],
         products: [] as string[],
         entries: [] as StockEntryDto[],
       };
@@ -76,15 +77,14 @@ export class StockEntryService {
       for (const entry of newProducts) {
         if (entry.productId) {
           const prId = Buffer.from(entry.productId.id).toString('hex');
-          if (!returnObj.products.includes(prId)) {
+          if (!returnObj.productsStatusChanged.includes(prId)) {
+            returnObj.products.push(prId);
             const result = (await this.eventEmitter.emitAsync(
               'entry.added',
               prId,
               entry.quantityUnits,
             )) as unknown as boolean;
-            console.log(result + ' RESULT');
-            if (result === true) returnObj.products.push(prId);
-            console.log(returnObj.products);
+            if (result === true) returnObj.productsStatusChanged.push(prId);
           }
         }
       }
