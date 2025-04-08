@@ -10,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { StockEntryService } from '../service/stockEntry.service';
 import { StockEntryDto } from '../dto/stockEntry.dto';
+import { ProductDto } from '../../product/dto/product.dto';
 
 @Controller('stock_entries')
 export class StockEntryController {
@@ -25,7 +26,7 @@ export class StockEntryController {
   @Post('/add_new_entries_stack')
   async addNewEntriesStack(
     @Body() entriesArray: StockEntryDto[],
-  ): Promise<{ products: string[]; entries: StockEntryDto[] }> {
+  ): Promise<{ products: ProductDto[]; entries: StockEntryDto[] }> {
     return this.stockEntryService.addNewEntriesStack(entriesArray);
   }
 
