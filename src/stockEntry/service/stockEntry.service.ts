@@ -77,18 +77,19 @@ export class StockEntryService {
       for (const entry of newProducts) {
         if (entry.productId) {
           const prId = Buffer.from(entry.productId.id).toString('hex');
-          const result: ProductDto = (await this.eventEmitter.emitAsync(
+          const result: ProductDto[] = (await this.eventEmitter.emitAsync(
             'entry.added',
             prId,
             entry.quantityUnits,
-          )) as unknown as ProductDto;
-          returnObj.products.push(result);
+          )) as unknown as ProductDto[];
+          returnObj.products.push(result[0]);
         }
       }
 
       returnObj.entries = newProducts.map((el: StockEntry) =>
         StockEntryMapper.toDto(el),
       );
+      console.log(returnObj);
       return returnObj;
     } catch (error) {
       throw new Error(
