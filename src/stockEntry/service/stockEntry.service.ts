@@ -5,6 +5,7 @@ import { StockEntry } from '../schema/stockEntry.schema';
 import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
+import { ProductDto } from '../../product/dto/product.dto';
 
 @Injectable()
 export class StockEntryService {
@@ -55,7 +56,7 @@ export class StockEntryService {
   async addNewEntriesStack(
     //TODO clean and beauty
     entriesArray: StockEntryDto[],
-  ): Promise<{ products: string[]; entries: StockEntryDto[] }> {
+  ): Promise<{ products: ProductDto[]; entries: StockEntryDto[] }> {
     try {
       const temp: Partial<StockEntry>[] = [];
       entriesArray.map((en) =>
@@ -69,23 +70,19 @@ export class StockEntryService {
         await this.stockEntryModel.insertMany(temp);
       if (!newProducts) throw new Error('Smth went wrong');
       const returnObj = {
-        productsStatusChanged: [] as string[],
-        products: [] as string[],
+        products: [] as ProductDto[],
         entries: [] as StockEntryDto[],
       };
 
       for (const entry of newProducts) {
         if (entry.productId) {
           const prId = Buffer.from(entry.productId.id).toString('hex');
-          if (!returnObj.productsStatusChanged.includes(prId)) {
-            returnObj.products.push(prId);
-            const result = (await this.eventEmitter.emitAsync(
-              'entry.added',
-              prId,
-              entry.quantityUnits,
-            )) as unknown as boolean;
-            if (result === true) returnObj.productsStatusChanged.push(prId);
-          }
+          const result: ProductDto = (await this.eventEmitter.emitAsync(
+            'entry.added',
+            prId,
+            entry.quantityUnits,
+          )) as unknown as ProductDto;
+          returnObj.products.push(result);
         }
       }
 

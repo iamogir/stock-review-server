@@ -14,13 +14,19 @@ export class ProductService {
     private readonly eventEmitter: EventEmitter2,
   ) {}
   @OnEvent('entry.added')
-  async handleEntryAdded(id: string, quantityUnits: number): Promise<boolean> {
+  async handleEntryAdded(
+    id: string,
+    quantityUnits: number,
+  ): Promise<ProductDto> {
     const product = await this.productModel.findById(id).exec();
     if (product) {
       await this.changeTotalQuantity(id, product.totalQuantity + quantityUnits);
       if (product.status) {
-        return false;
-      } else return await this.changeStatus(id, true);
+        return ProductMapper.toDto(product);
+      } else {
+        await this.changeStatus(id, true);
+        return ProductMapper.toDto(product);
+      }
     } else throw new NotFoundException(`Product with id ${id} not found`);
   }
   @OnEvent('entry.deleted')
