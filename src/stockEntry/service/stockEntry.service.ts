@@ -85,7 +85,7 @@ export class StockEntryService {
           returnObj.products.push(result[0]);
         }
       }
-
+      //TODO QUANTITY DOES NOT UPDATE
       returnObj.entries = newProducts.map((el: StockEntry) =>
         StockEntryMapper.toDto(el),
       );
