@@ -19,21 +19,22 @@ export class ProductService {
     quantityUnits: number,
   ): Promise<ProductDto> {
     const product = await this.productModel.findById(id).exec();
-    if (product) {
-      await this.changeTotalQuantity(id, product.totalQuantity + quantityUnits);
-      if (product.status) {
-        const newProduct = await this.productModel.findById(id).exec();
-        if (newProduct) {
-          return ProductMapper.toDto(newProduct);
-        } else throw new NotFoundException(`Product with id ${id} not found`);
-      } else {
-        await this.changeStatus(id, true);
-        const newProduct = await this.productModel.findById(id).exec();
-        if (newProduct) {
-          return ProductMapper.toDto(newProduct);
-        } else throw new NotFoundException(`Product with id ${id} not found`);
-      }
-    } else throw new NotFoundException(`Product with id ${id} not found`);
+    if (!product)
+      //TODO make beautiful
+      throw new NotFoundException(`Product with id ${id} not found`);
+    await this.changeTotalQuantity(id, product.totalQuantity + quantityUnits);
+    if (product.status) {
+      const newProduct = await this.productModel.findById(id).exec();
+      if (newProduct) {
+        return ProductMapper.toDto(newProduct);
+      } else throw new NotFoundException(`Product with id ${id} not found`);
+    } else {
+      await this.changeStatus(id, true);
+      const newProduct = await this.productModel.findById(id).exec();
+      if (newProduct) {
+        return ProductMapper.toDto(newProduct);
+      } else throw new NotFoundException(`Product with id ${id} not found`);
+    }
   }
   @OnEvent('entry.deleted')
   async handleEntryDeleted(id: string, quantityUnitsToDelete: number) {
