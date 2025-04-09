@@ -22,10 +22,16 @@ export class ProductService {
     if (product) {
       await this.changeTotalQuantity(id, product.totalQuantity + quantityUnits);
       if (product.status) {
-        return ProductMapper.toDto(product);
+        const newProduct = await this.productModel.findById(id).exec();
+        if (newProduct) {
+          return ProductMapper.toDto(newProduct);
+        } else throw new NotFoundException(`Product with id ${id} not found`);
       } else {
         await this.changeStatus(id, true);
-        return ProductMapper.toDto(product);
+        const newProduct = await this.productModel.findById(id).exec();
+        if (newProduct) {
+          return ProductMapper.toDto(newProduct);
+        } else throw new NotFoundException(`Product with id ${id} not found`);
       }
     } else throw new NotFoundException(`Product with id ${id} not found`);
   }
