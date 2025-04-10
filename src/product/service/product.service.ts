@@ -42,16 +42,12 @@ export class ProductService {
     const product = await this.productModel.findById(id).exec();
     if (!product || product.totalQuantity <= 0) return;
 
-    console.log('before');
     if (quantityUnitsToDelete < 0) {
-      console.log('in');
       await this.changeTotalQuantity(id, 0);
       await this.changeStatus(id, false);
       return;
     }
-    console.log('after');
     const quantity = product.totalQuantity - quantityUnitsToDelete;
-    console.log(quantity + ' PPPPPPPPPP');
     await this.changeTotalQuantity(id, quantity < 0 ? 0 : quantity);
     if (quantity <= 0) {
       await this.changeStatus(id, false);
