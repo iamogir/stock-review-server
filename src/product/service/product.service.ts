@@ -38,7 +38,6 @@ export class ProductService {
   }
   @OnEvent('entry.deleted')
   async handleEntryDeleted(id: string, quantityUnitsToDelete: number) {
-    console.log('START');
     const product = await this.productModel.findById(id).exec();
     if (!product || product.totalQuantity <= 0) return;
 
