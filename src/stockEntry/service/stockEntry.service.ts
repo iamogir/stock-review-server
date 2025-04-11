@@ -86,7 +86,7 @@ export class StockEntryService {
           returnObj.products.push(result[0]);
         }
       }
-      //TODO QUANTITY DOES NOT UPDATE
+      //TODO change ProductDto => to Product
       returnObj.entries = newProducts.map((el: StockEntry) =>
         StockEntryMapper.toDto(el),
       );
@@ -141,11 +141,12 @@ export class StockEntryService {
           entryId: id,
           product: {} as ProductDto,
         };
-        returnObj.product = (await this.eventEmitter.emitAsync(
+        const temp: ProductDto[] = (await this.eventEmitter.emitAsync(
           'entry.deleted',
           Buffer.from(product.productId.id).toString('hex'),
           product.quantityUnits,
-        )[0]) as ProductDto;
+        )) as unknown as ProductDto[];
+        returnObj.product = temp[0];
         return returnObj;
       }
     } catch (error) {
