@@ -43,7 +43,9 @@ export class StockEntryController {
   }
 
   @Delete('/delete_stock_entry_by_id/:id')
-  async deleteStockEntryById(@Param('id') id: string): Promise<string> {
+  async deleteStockEntryById(
+    @Param('id') id: string,
+  ): Promise<{ entryId: string; product: ProductDto }> {
     return this.stockEntryService.deleteStockEntryById(id);
   }
 
