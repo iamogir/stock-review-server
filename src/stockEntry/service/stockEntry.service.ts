@@ -6,6 +6,7 @@ import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ProductDto } from '../../product/dto/product.dto';
+import { Product } from '../../product/schema/product.schema';
 
 @Injectable()
 export class StockEntryService {
@@ -124,7 +125,9 @@ export class StockEntryService {
     }
   }
 
-  async deleteStockEntryById(id: string): Promise<string> {
+  async deleteStockEntryById(
+    id: string,
+  ): Promise<{ entryId: string; product: ProductDto }> {
     try {
       const product: StockEntry | null = await this.stockEntryModel
         .findByIdAndDelete(id)
@@ -134,12 +137,16 @@ export class StockEntryService {
           'Stock entry with id: ' + id + ' was not found',
         );
       } else {
-        await this.eventEmitter.emitAsync(
+        const returnObj = {
+          entryId: id,
+          product: {} as ProductDto,
+        };
+        returnObj.product = (await this.eventEmitter.emitAsync(
           'entry.deleted',
           Buffer.from(product.productId.id).toString('hex'),
           product.quantityUnits,
-        );
-        return id;
+        )[0]) as ProductDto;
+        return returnObj;
       }
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
