@@ -15,8 +15,14 @@ export class ProductController {
     return this.productService.addNewProduct(product);
   }
   @Post('/add_new_products_stack')
-  async addNewProductsStack(@Body() products: ProductDto[]): Promise<ProductDto[]> {
+  async addNewProductsStack(
+    @Body() products: ProductDto[],
+  ): Promise<ProductDto[]> {
     return this.productService.addNewProductsStack(products);
+  }
+  @Get('/get_product_by_id/:id')
+  async getProductByID(@Param('id') id: string): Promise<ProductDto> {
+    return this.productService.getProductById(id);
   }
   @Delete('/delete_product_by_id/:id')
   async deleteProductById(@Param('id') id: string): Promise<string> {
