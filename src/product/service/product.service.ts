@@ -113,6 +113,16 @@ export class ProductService {
       );
     }
   }
+  async getProductById(id: string): Promise<ProductDto> {
+    try {
+      const product = await this.productModel.findById(id).exec();
+      if (!product)
+        throw new NotFoundException(`Product with id ${id} not found`);
+      return ProductMapper.toDto(product);
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
   async deleteProductById(id: string): Promise<string> {
     try {
       const deletedResult = await this.productModel
