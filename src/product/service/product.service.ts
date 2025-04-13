@@ -28,27 +28,21 @@ export class ProductService {
     id: string,
     quantityUnitsToDelete: number,
   ): Promise<ProductDto> {
-    const product = await this.productModel.findById(id).exec();
-    if (!product || product.totalQuantity <= 0)
+    const product = await this.getProductSchema(id);
+    if (product.totalQuantity <= 0)
       throw new NotFoundException(`Product with id ${id} not found`);
 
     if (quantityUnitsToDelete < 0) {
       await this.changeTotalQuantity(id, 0);
       await this.changeStatus(id, false);
-      const newProduct = await this.productModel.findById(id).exec();
-      if (newProduct) {
-        return ProductMapper.toDto(newProduct);
-      } else throw new NotFoundException(`Product with id ${id} not found`);
+    } else {
+      const quantity = product.totalQuantity - quantityUnitsToDelete;
+      await this.changeTotalQuantity(id, quantity < 0 ? 0 : quantity);
+      if (quantity <= 0) {
+        await this.changeStatus(id, false);
+      }
     }
-    const quantity = product.totalQuantity - quantityUnitsToDelete;
-    await this.changeTotalQuantity(id, quantity < 0 ? 0 : quantity);
-    if (quantity <= 0) {
-      await this.changeStatus(id, false);
-    }
-    const newProduct = await this.productModel.findById(id).exec();
-    if (newProduct) {
-      return ProductMapper.toDto(newProduct);
-    } else throw new NotFoundException(`Product with id ${id} not found`);
+    return ProductMapper.toDto(await this.getProductSchema(id));
   }
   async getProductSchema(id: string): Promise<Product> {
     try {
