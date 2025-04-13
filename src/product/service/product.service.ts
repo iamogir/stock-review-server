@@ -20,7 +20,8 @@ export class ProductService {
   ): Promise<ProductDto> {
     const product = await this._getProductSchema(id);
     await this.changeTotalQuantity(id, product.totalQuantity + quantityUnits);
-    if (!product.status) await this.changeStatus(id, true);
+    // if (!product.status) await this.changeStatus(id, true);
+    if (!product.status) await this.updateProductById(id, { status: true });
     return ProductMapper.toDto(await this._getProductSchema(id));
   }
   @OnEvent('entry.deleted')
