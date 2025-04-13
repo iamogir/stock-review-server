@@ -28,4 +28,11 @@ export class ProductController {
   async deleteProductById(@Param('id') id: string): Promise<string> {
     return this.productService.deleteProductById(id);
   }
+  @Post('/update_product_by_id/:id')
+  async updateProductById(
+    @Param('id') id: string,
+    @Body() changes: Partial<ProductDto>,
+  ): Promise<ProductDto> {
+    return this.productService.updateProductById(id, changes);
+  }
 }
