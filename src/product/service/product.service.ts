@@ -18,17 +18,17 @@ export class ProductService {
     id: string,
     quantityUnits: number,
   ): Promise<ProductDto> {
-    const product = await this.getProductSchema(id);
+    const product = await this._getProductSchema(id);
     await this.changeTotalQuantity(id, product.totalQuantity + quantityUnits);
     if (!product.status) await this.changeStatus(id, true);
-    return ProductMapper.toDto(await this.getProductSchema(id));
+    return ProductMapper.toDto(await this._getProductSchema(id));
   }
   @OnEvent('entry.deleted')
   async handleEntryDeleted(
     id: string,
     quantityUnitsToDelete: number,
   ): Promise<ProductDto> {
-    const product = await this.getProductSchema(id);
+    const product = await this._getProductSchema(id);
     if (product.totalQuantity <= 0)
       throw new NotFoundException(`Product with id ${id} not found`);
 
@@ -42,9 +42,9 @@ export class ProductService {
         await this.changeStatus(id, false);
       }
     }
-    return ProductMapper.toDto(await this.getProductSchema(id));
+    return ProductMapper.toDto(await this._getProductSchema(id));
   }
-  async getProductSchema(id: string): Promise<Product> {
+  private async _getProductSchema(id: string): Promise<Product> {
     try {
       const product = await this.productModel.findById(id).exec();
       if (!product)
@@ -54,7 +54,7 @@ export class ProductService {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
-  async getAllProducts(): Promise<ProductDto[]> {
+  public async getAllProducts(): Promise<ProductDto[]> {
     try {
       const products: Product[] = await this.productModel.find().exec();
 
@@ -65,7 +65,7 @@ export class ProductService {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
-  async addNewProduct(product: ProductDto): Promise<ProductDto> {
+  public async addNewProduct(product: ProductDto): Promise<ProductDto> {
     try {
       const result = await this.addNewProductsStack([product]);
       return result[0];
@@ -86,7 +86,9 @@ export class ProductService {
     //   throw new Error('New product was not added: ' + (error as Error).message);
     // }
   }
-  async addNewProductsStack(products: ProductDto[]): Promise<ProductDto[]> {
+  public async addNewProductsStack(
+    products: ProductDto[],
+  ): Promise<ProductDto[]> {
     try {
       const temp: Partial<Product>[] = [];
       products.map((pr) =>
@@ -105,7 +107,7 @@ export class ProductService {
       );
     }
   }
-  async getProductById(id: string): Promise<ProductDto> {
+  public async getProductById(id: string): Promise<ProductDto> {
     try {
       const product = await this.productModel.findById(id).exec();
       if (!product)
@@ -115,7 +117,7 @@ export class ProductService {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
-  async deleteProductById(id: string): Promise<string> {
+  public async deleteProductById(id: string): Promise<string> {
     try {
       const deletedResult = await this.productModel
         .findByIdAndDelete(id)
