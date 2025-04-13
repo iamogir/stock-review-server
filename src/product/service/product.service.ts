@@ -74,17 +74,6 @@ export class ProductService {
         'New products were not added: ' + (error as Error).message,
       );
     }
-    // try {
-    //   const temp = ProductMapper.fromDto(product);
-    //   const newProduct: Product = new this.productModel({
-    //     ...temp, // { status: false, totalQuantity: 0 }
-    //     createdAt: new Date(),
-    //     updatedAt: new Date(),
-    //   });
-    //   return ProductMapper.toDto(await newProduct.save());
-    // } catch (error) {
-    //   throw new Error('New product was not added: ' + (error as Error).message);
-    // }
   }
   public async addNewProductsStack(
     products: ProductDto[],
@@ -172,27 +161,15 @@ export class ProductService {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
-  // async changeTotalQuantity(id: string, quantity: number): Promise<number> {
-  //   try {
-  //     const changes = await this.productModel.findByIdAndUpdate(
-  //       id,
-  //       { quantity },
-  //       { new: true },
-  //     );
-  //     if (!changes) {
-  //       throw new NotFoundException('Product not found');
-  //     } else {
-  //       return quantity;
-  //     }
-  //   } catch (error) {
-  //     throw new Error('Something went wrong: ' + (error as Error).message);
-  //   }
-  // }
   async updateProductById(
     id: string,
     changes: Partial<ProductDto>,
   ): Promise<ProductDto> {
     try {
+      Object.keys(changes).forEach((key: string) => {
+        if (typeof changes[key] === 'string')
+          changes[key] = changes[key].toLowerCase();
+      });
       const updatedProduct = await this.productModel.findByIdAndUpdate(
         id,
         changes,

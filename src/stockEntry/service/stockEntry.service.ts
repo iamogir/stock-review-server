@@ -177,7 +177,6 @@ export class StockEntryService {
     try {
       value = value.toLowerCase();
       field = field.toLowerCase();
-      console.log(value);
       const productsArr: StockEntry[] | null = await this.stockEntryModel
         .find({ [field]: value })
         .exec();
