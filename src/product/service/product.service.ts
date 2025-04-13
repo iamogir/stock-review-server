@@ -62,6 +62,16 @@ export class ProductService {
       return ProductMapper.toDto(newProduct);
     } else throw new NotFoundException(`Product with id ${id} not found`);
   }
+  async getProductSchema(id: string): Promise<Product> {
+    try {
+      const product = await this.productModel.findById(id).exec();
+      if (!product)
+        throw new NotFoundException(`Product with id ${id} not found`);
+      return product;
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
   async getAllProducts(): Promise<ProductDto[]> {
     try {
       const products: Product[] = await this.productModel.find().exec();
