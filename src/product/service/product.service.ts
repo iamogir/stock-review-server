@@ -18,23 +18,10 @@ export class ProductService {
     id: string,
     quantityUnits: number,
   ): Promise<ProductDto> {
-    const product = await this.productModel.findById(id).exec();
-    if (!product)
-      //TODO make beautiful
-      throw new NotFoundException(`Product with id ${id} not found`);
+    const product = await this.getProductSchema(id);
     await this.changeTotalQuantity(id, product.totalQuantity + quantityUnits);
-    if (product.status) {
-      const newProduct = await this.productModel.findById(id).exec();
-      if (newProduct) {
-        return ProductMapper.toDto(newProduct);
-      } else throw new NotFoundException(`Product with id ${id} not found`);
-    } else {
-      await this.changeStatus(id, true);
-      const newProduct = await this.productModel.findById(id).exec();
-      if (newProduct) {
-        return ProductMapper.toDto(newProduct);
-      } else throw new NotFoundException(`Product with id ${id} not found`);
-    }
+    if (!product.status) await this.changeStatus(id, true);
+    return ProductMapper.toDto(await this.getProductSchema(id));
   }
   @OnEvent('entry.deleted')
   async handleEntryDeleted(
@@ -42,7 +29,8 @@ export class ProductService {
     quantityUnitsToDelete: number,
   ): Promise<ProductDto> {
     const product = await this.productModel.findById(id).exec();
-    if (!product || product.totalQuantity <= 0) throw new NotFoundException(`Product with id ${id} not found`);
+    if (!product || product.totalQuantity <= 0)
+      throw new NotFoundException(`Product with id ${id} not found`);
 
     if (quantityUnitsToDelete < 0) {
       await this.changeTotalQuantity(id, 0);
