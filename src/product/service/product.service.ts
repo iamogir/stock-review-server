@@ -37,14 +37,14 @@ export class ProductService {
 
     if (quantityUnitsToDelete < 0) {
       await this.updateProductById(id, { totalQuantity: 0 });
-      await this.changeStatus(id, false);
+      await this.updateProductById(id, { status: false });
     } else {
       const quantity = product.totalQuantity - quantityUnitsToDelete;
       await this.updateProductById(id, {
         totalQuantity: quantity < 0 ? 0 : quantity,
       });
       if (quantity <= 0) {
-        await this.changeStatus(id, false);
+        await this.updateProductById(id, { status: false });
       }
     }
     return ProductMapper.toDto(await this._getProductSchema(id));
@@ -126,24 +126,24 @@ export class ProductService {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
-  async changeStatus(id: string, status: boolean): Promise<boolean> {
-    console.log('status');
-    try {
-      const changes = await this.productModel.findByIdAndUpdate(
-        id,
-        { status },
-        { new: true },
-      );
-      if (!changes) {
-        throw new NotFoundException('Product not found');
-      } else {
-        console.log('Change');
-        return true;
-      }
-    } catch (error) {
-      throw new Error('Something went wrong: ' + (error as Error).message);
-    }
-  }
+  // async changeStatus(id: string, status: boolean): Promise<boolean> {
+  //   console.log('status');
+  //   try {
+  //     const changes = await this.productModel.findByIdAndUpdate(
+  //       id,
+  //       { status },
+  //       { new: true },
+  //     );
+  //     if (!changes) {
+  //       throw new NotFoundException('Product not found');
+  //     } else {
+  //       console.log('Change');
+  //       return true;
+  //     }
+  //   } catch (error) {
+  //     throw new Error('Something went wrong: ' + (error as Error).message);
+  //   }
+  // }
   // async changeTotalQuantity(
   //   id: string,
   //   totalQuantity: number,
