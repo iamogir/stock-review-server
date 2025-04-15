@@ -33,7 +33,6 @@ export class ProductService {
     const product = await this._getProductSchema(id);
     if (product.totalQuantity <= 0)
       throw new NotFoundException(`Product with id ${id} not found`);
-
     if (quantityUnitsToDelete < 0) {
       await this.updateProductById(id, { totalQuantity: 0 });
       await this.updateProductById(id, { status: false });

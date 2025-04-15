@@ -214,7 +214,11 @@ export class StockEntryService {
       if (!entry) {
         throw new NotFoundException('Entry with id: ' + id + ' was not found');
       } else {
-        await this.eventEmitter.emitAsync('entry.deleted', id, count);
+        await this.eventEmitter.emitAsync(
+          'entry.deleted',
+          entry.productId,
+          count,
+        );
         return entry;
       }
     } catch (error) {
