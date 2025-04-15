@@ -22,7 +22,6 @@ export class ProductService {
     await this.updateProductById(id, {
       totalQuantity: product.totalQuantity + quantityUnits,
     });
-    // if (!product.status) await this.changeStatus(id, true);
     if (!product.status) await this.updateProductById(id, { status: true });
     return ProductMapper.toDto(await this._getProductSchema(id));
   }
@@ -126,46 +125,6 @@ export class ProductService {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
   }
-  // async changeStatus(id: string, status: boolean): Promise<boolean> {
-  //   console.log('status');
-  //   try {
-  //     const changes = await this.productModel.findByIdAndUpdate(
-  //       id,
-  //       { status },
-  //       { new: true },
-  //     );
-  //     if (!changes) {
-  //       throw new NotFoundException('Product not found');
-  //     } else {
-  //       console.log('Change');
-  //       return true;
-  //     }
-  //   } catch (error) {
-  //     throw new Error('Something went wrong: ' + (error as Error).message);
-  //   }
-  // }
-  // async changeTotalQuantity(
-  //   id: string,
-  //   totalQuantity: number,
-  // ): Promise<boolean> {
-  //   console.log('quantity');
-  //   try {
-  //     console.log(totalQuantity);
-  //     const changes = await this.productModel.findByIdAndUpdate(
-  //       id,
-  //       { totalQuantity },
-  //       { new: true },
-  //     );
-  //     if (!changes) {
-  //       throw new NotFoundException('Product not found');
-  //     } else {
-  //       console.log('Change');
-  //       return true;
-  //     }
-  //   } catch (error) {
-  //     throw new Error('Something went wrong: ' + (error as Error).message);
-  //   }
-  // }
   async updateProductById(
     id: string,
     changes: Partial<ProductDto>,
