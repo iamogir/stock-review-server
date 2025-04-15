@@ -205,6 +205,7 @@ export class StockEntryService {
         throw new Error('Counts for deleting are greater than exiting');
       if (quantity === 0) {
         await this.deleteStockEntryById(id);
+        await this.eventEmitter.emitAsync('entry.deleted', id, -1);
         return null;
       }
       const entry = await this.updateStockEntryById(id, {
@@ -213,6 +214,7 @@ export class StockEntryService {
       if (!entry) {
         throw new NotFoundException('Entry with id: ' + id + ' was not found');
       } else {
+        await this.eventEmitter.emitAsync('entry.deleted', id, count);
         return entry;
       }
     } catch (error) {
