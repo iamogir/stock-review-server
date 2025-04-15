@@ -66,6 +66,14 @@ export class StockEntryController {
       : 'no such products';
   }
 
+  @Put('/delete_units_of_product') ///delete_units_of_product?id=id&count=count
+  async deleteUnitsOfProduct(
+    @Query('id') id: string,
+    @Query('count') count: number,
+  ): Promise<StockEntryDto | null> {
+    return this.stockEntryService.deleteUnitsOfProduct(id, count);
+  }
+
   @Put('/update_stock_entry_by_id/:id')
   async updateStockEntryById(
     @Param('id') id: string,
