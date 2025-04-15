@@ -6,7 +6,6 @@ import { StockEntryDto } from '../dto/stockEntry.dto';
 import { StockEntryMapper } from '../mapping/stockEntry.mapper';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { ProductDto } from '../../product/dto/product.dto';
-import { Product } from '../../product/schema/product.schema';
 
 @Injectable()
 export class StockEntryService {
@@ -187,6 +186,35 @@ export class StockEntryService {
             ' does not exist or entry with this field were not found',
         );
       } else return productsArr.map((pr) => StockEntryMapper.toDto(pr));
+    } catch (error) {
+      throw new Error('Something went wrong: ' + (error as Error).message);
+    }
+  }
+
+  async deleteUnitsOfProduct(
+    id: string,
+    count: number,
+  ): Promise<StockEntryDto | null> {
+    try {
+      const oldEntry = await this.stockEntryModel.findById(id).exec();
+      if (!oldEntry) {
+        throw new NotFoundException('Entry with id: ' + id + ' was not found');
+      }
+      const quantity = oldEntry.quantityUnits - count;
+      if (quantity < 0)
+        throw new Error('Counts for deleting are greater than exiting');
+      if (quantity === 0) {
+        await this.deleteStockEntryById(id);
+        return null;
+      }
+      const entry = await this.updateStockEntryById(id, {
+        quantityUnits: quantity,
+      });
+      if (!entry) {
+        throw new NotFoundException('Entry with id: ' + id + ' was not found');
+      } else {
+        return entry;
+      }
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
