@@ -70,7 +70,11 @@ export class StockEntryController {
   async deleteUnitsOfProduct(
     @Query('id') id: string,
     @Query('count') count: number,
-  ): Promise<{ id: string; count: number } | null> {
+  ): Promise<{
+    idProduct: string;
+    idEntry: string | null;
+    count: number;
+  } | null> {
     return this.stockEntryService.deleteUnitsOfProduct(id, count);
   }
 
