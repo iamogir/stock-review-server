@@ -239,7 +239,7 @@ export class StockEntryService {
           },
           entry: { id: entry._id ?? '', count: quantity },
         };
-      }
+      } // TODO: breaking when entry is last
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
