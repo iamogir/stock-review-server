@@ -196,7 +196,7 @@ export class StockEntryService {
     count: number,
   ): Promise<{
     product: { id: string; count: number };
-    entry: { id: string; count: number } | null;
+    entry: { id: string; count: number | null };
   }> {
     try {
       const oldEntry = await this.stockEntryModel.findById(id).exec();
@@ -218,7 +218,7 @@ export class StockEntryService {
             id: product[0]._id ?? '',
             count: product[0].totalQuantity,
           },
-          entry: null,
+          entry: { id, count: null },
         };
       }
       const entry = await this.updateStockEntryById(id, {

@@ -72,7 +72,7 @@ export class StockEntryController {
     @Query('count') count: number,
   ): Promise<{
     product: { id: string; count: number };
-    entry: { id: string; count: number } | null;
+    entry: { id: string; count: number | null };
   }> {
     return this.stockEntryService.deleteUnitsOfProduct(id, count);
   }
