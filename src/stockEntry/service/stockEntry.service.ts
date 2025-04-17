@@ -81,7 +81,7 @@ export class StockEntryService {
             'entry.added',
             prId,
             entry.quantityUnits,
-          )) as unknown as ProductDto[];
+          )) as ProductDto[];
           returnObj.products.push(result[0]);
         }
       }
@@ -144,7 +144,7 @@ export class StockEntryService {
           'entry.deleted',
           Buffer.from(product.productId.id).toString('hex'),
           product.quantityUnits,
-        )) as unknown as ProductDto[];
+        )) as ProductDto[];
         returnObj.product = temp[0];
         return returnObj;
       }
@@ -194,7 +194,7 @@ export class StockEntryService {
   async deleteUnitsOfProduct(
     id: string,
     count: number,
-  ): Promise<StockEntryDto | null> {
+  ): Promise<{ idProduct: string; actualCount: number }> {
     try {
       const oldEntry = await this.stockEntryModel.findById(id).exec();
       if (!oldEntry) {
@@ -205,8 +205,15 @@ export class StockEntryService {
         throw new Error('Counts for deleting are greater than exiting');
       if (quantity === 0) {
         await this.deleteStockEntryById(id);
-        await this.eventEmitter.emitAsync('entry.deleted', id, -1);
-        return null;
+        const product: ProductDto[] = (await this.eventEmitter.emitAsync(
+          'entry.deleted',
+          id,
+          -1,
+        )) as ProductDto[];
+        return {
+          idProduct: product[0]._id ?? '',
+          actualCount: product[0].totalQuantity,
+        };
       }
       const entry = await this.updateStockEntryById(id, {
         quantityUnits: quantity,
@@ -214,12 +221,15 @@ export class StockEntryService {
       if (!entry) {
         throw new NotFoundException('Entry with id: ' + id + ' was not found');
       } else {
-        await this.eventEmitter.emitAsync(
+        const product: ProductDto[] = (await this.eventEmitter.emitAsync(
           'entry.deleted',
           entry.productId,
           count,
-        );
-        return entry;
+        )) as ProductDto[];
+        return {
+          idProduct: product[0]._id ?? '',
+          actualCount: product[0].totalQuantity,
+        };
       }
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
