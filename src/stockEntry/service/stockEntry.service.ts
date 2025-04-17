@@ -194,7 +194,7 @@ export class StockEntryService {
   async deleteUnitsOfProduct(
     id: string,
     count: number,
-  ): Promise<{ id: string; count: number }> {
+  ): Promise<{ idProduct: string; idEntry: string | null; count: number }> {
     try {
       const oldEntry = await this.stockEntryModel.findById(id).exec();
       if (!oldEntry) {
@@ -211,7 +211,8 @@ export class StockEntryService {
           -1,
         )) as ProductDto[];
         return {
-          id: product[0]._id ?? '',
+          idProduct: product[0]._id ?? '',
+          idEntry: null,
           count: product[0].totalQuantity,
         };
       }
@@ -227,7 +228,8 @@ export class StockEntryService {
           count,
         )) as ProductDto[];
         return {
-          id: product[0]._id ?? '',
+          idProduct: product[0]._id ?? '',
+          idEntry: entry._id ?? null,
           count: product[0].totalQuantity,
         };
       }
