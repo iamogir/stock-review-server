@@ -211,7 +211,7 @@ export class StockEntryService {
         const product: ProductDto[] = (await this.eventEmitter.emitAsync(
           'entry.deleted',
           oldEntry.productId._id,
-          -1,
+          count,
         )) as ProductDto[];
         return {
           product: {
