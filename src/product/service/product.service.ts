@@ -32,7 +32,7 @@ export class ProductService {
   ): Promise<ProductDto> {
     const product = await this._getProductSchema(id);
     if (product.totalQuantity <= 0)
-      throw new NotFoundException(`Product with id ${id} not found`);
+      throw new NotFoundException(`Product is empty, no entries`);
     if (quantityUnitsToDelete < 0) {
       await this.updateProductById(id, { totalQuantity: 0 });
       await this.updateProductById(id, { status: false });
