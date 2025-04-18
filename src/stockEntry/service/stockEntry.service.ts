@@ -207,16 +207,16 @@ export class StockEntryService {
       if (quantity < 0)
         throw new Error('Counts for deleting are greater than exiting');
       if (quantity === 0) {
-        await this.deleteStockEntryById(id);
-        const product: ProductDto[] = (await this.eventEmitter.emitAsync(
-          'entry.deleted',
-          oldEntry.productId._id,
-          count,
-        )) as ProductDto[];
+        const deletingResult = await this.deleteStockEntryById(id);
+        // const product: ProductDto[] = (await this.eventEmitter.emitAsync(
+        //   'entry.deleted',
+        //   oldEntry.productId._id,
+        //   count,
+        // )) as ProductDto[];
         return {
           product: {
-            id: product[0]._id ?? '',
-            count: product[0].totalQuantity,
+            id: deletingResult.product._id ?? '',
+            count: deletingResult.product.totalQuantity,
           },
           entry: { id, count: null },
         };
@@ -239,7 +239,7 @@ export class StockEntryService {
           },
           entry: { id: entry._id ?? '', count: quantity },
         };
-      } // TODO: breaking when entry is last
+      }
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
     }
