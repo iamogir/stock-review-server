@@ -208,11 +208,6 @@ export class StockEntryService {
         throw new Error('Counts for deleting are greater than exiting');
       if (quantity === 0) {
         const deletingResult = await this.deleteStockEntryById(id);
-        // const product: ProductDto[] = (await this.eventEmitter.emitAsync(
-        //   'entry.deleted',
-        //   oldEntry.productId._id,
-        //   count,
-        // )) as ProductDto[];
         return {
           product: {
             id: deletingResult.product._id ?? '',
