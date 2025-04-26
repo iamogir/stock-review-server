@@ -253,6 +253,7 @@ export class StockEntryService {
       if (!updatedProduct) {
         throw new NotFoundException('Entry with id: ' + id + ' was not found');
       }
+      console.log(changes);
       return StockEntryMapper.toDto(updatedProduct);
     } catch (error) {
       throw new Error('Something went wrong: ' + (error as Error).message);
