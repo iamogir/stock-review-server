@@ -13,7 +13,7 @@ import {
   SHOULD_NOT_BE_EMPTY,
 } from '../../common/const/errors.constants';
 
-export class StockEntryDto {
+export class UnitDto {
   @IsUUID('4', { message: ID_IS_NOT_VALID })
   _id?: string;
   @IsString({ message: IS_NOT_STRING })
