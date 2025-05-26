@@ -1,4 +1,4 @@
-import { Prop, Schema } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Types } from 'mongoose';
 
 @Schema({ collection: 'units' })
@@ -12,3 +12,5 @@ export class Unit extends Document {
   @Prop({ required: false }) barcode: string;
   @Prop({ required: true }) storageLocation: string;
 }
+
+export const UnitSchema = SchemaFactory.createForClass(Unit);
