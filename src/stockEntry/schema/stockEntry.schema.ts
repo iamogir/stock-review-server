@@ -15,6 +15,7 @@ export class StockEntry extends Document {
   @Prop({ required: true }) storageLocation: string;
   //DELIVERY!
   //check up
+  //created plan
 }
 
 export const StockEntrySchema = SchemaFactory.createForClass(StockEntry);
