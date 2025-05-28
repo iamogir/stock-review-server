@@ -16,6 +16,7 @@ export class StockEntry extends Document {
   //DELIVERY!
   //check up
   //created plan
+  //rewriting everything
 }
 
 export const StockEntrySchema = SchemaFactory.createForClass(StockEntry);
