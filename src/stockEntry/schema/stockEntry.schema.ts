@@ -13,10 +13,6 @@ export class StockEntry extends Document {
   @Prop({ required: false }) barcode: string;
   @Prop({ required: true }) supplier: string;
   @Prop({ required: true }) storageLocation: string;
-  //DELIVERY!
-  //check up
-  //created plan
-  //rewriting everything
 }
 
 export const StockEntrySchema = SchemaFactory.createForClass(StockEntry);
